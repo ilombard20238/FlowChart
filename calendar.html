@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowTime - Calendar</title>
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: #f0f4f8; margin:0; padding:0; }
+    header { background:#fff; padding:20px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+    h1 { margin:0; color:#6c4ab6; }
+    table { width:100%; border-collapse: collapse; margin-top:20px; }
+    th, td { border:1px solid #ccc; padding:10px; text-align:center; }
+    button { padding:5px 10px; margin-top:5px; border-radius:5px; border:none; background:#6c4ab6; color:#fff; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📅 Calendar</h1>
+  </header>
+  <div style="padding:20px;">
+    <table id="calendar">
+      <thead>
+        <tr>
+          <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+        </tr>
+      </thead>
+      <tbody id="calendarBody"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const calendarBody = document.getElementById('calendarBody');
+    const daysInMonth = 30;
+    let row;
+    for(let i=1;i<=daysInMonth;i++){
+      if((i-1)%7===0){ row = document.createElement('tr'); calendarBody.appendChild(row);}
+      const cell = document.createElement('td');
+      cell.innerHTML = i + '<br><button onclick="alert(`Add routine to day ${i}`)">Add Routine</button>';
+      row.appendChild(cell);
+    }
+  </script>
+</body>
+</html>
