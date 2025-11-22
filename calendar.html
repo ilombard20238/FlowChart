@@ -1,77 +1,148 @@
-<script>
-  const calendarBody = document.getElementById('calendarBody');
-  const monthSelect = document.getElementById('monthSelect');
-  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const year = new Date().getFullYear();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowTime - Calendar</title>
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: #f0f4f8; margin:0; padding:0; }
+    header { background:#fff; padding:20px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+    h1 { margin:0; color:#6c4ab6; }
+    table { width:100%; border-collapse: collapse; margin-top:20px; }
+    th, td { border:1px solid #ccc; padding:10px; text-align:center; vertical-align: top; }
+    button { padding:5px 10px; margin-top:5px; border-radius:5px; border:none; background:#6c4ab6; color:#fff; cursor:pointer; }
+    .home-btn {
+      display:inline-block;
+      margin: 10px;
+      padding: 8px 15px;
+      background: #6c4ab6;
+      color: #fff;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    #monthSelect {
+      margin: 10px;
+      padding: 5px 10px;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+    .routine-item {
+      margin-top: 5px;
+      padding: 4px;
+      background: #e8ddff;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="home-btn">🏠 Home</a>
+  <header>
+    <h1>📅 Calendar</h1>
+    <select id="monthSelect"></select>
+  </header>
+  <div style="padding:20px;">
+    <table id="calendar">
+      <thead>
+        <tr>
+          <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th>
+          <th>Thu</th><th>Fri</th><th>Sat</th>
+        </tr>
+      </thead>
+      <tbody id="calendarBody"></tbody>
+    </table>
+  </div>
 
-  // Populate month dropdown
-  monthNames.forEach((m, i) => {
-    const option = document.createElement('option');
-    option.value = i;
-    option.text = m;
-    monthSelect.appendChild(option);
-  });
-  monthSelect.value = new Date().getMonth(); // select current month
+  <script>
+    const calendarBody = document.getElementById('calendarBody');
+    const monthSelect = document.getElementById('monthSelect');
+    const monthNames = [
+      "January","February","March","April","May","June",
+      "July","August","September","October","November","December"
+    ];
+    const year = new Date().getFullYear();
 
-  function getDaysInMonth(year, month) {
-    return new Date(year, month + 1, 0).getDate();
-  }
+    // Populate month dropdown
+    monthNames.forEach((m, i) => {
+      const option = document.createElement('option');
+      option.value = i;
+      option.text = m;
+      monthSelect.appendChild(option);
+    });
+    monthSelect.value = new Date().getMonth(); // Default current month
 
-  function generateCalendar(year, month) {
-    calendarBody.innerHTML = ''; 
-    const daysInMonth = getDaysInMonth(year, month);
-    const firstDay = new Date(year, month, 1).getDay();
-
-    let row = document.createElement('tr');
-
-    // Empty cells for alignment
-    for (let i = 0; i < firstDay; i++) {
-      row.appendChild(document.createElement('td'));
+    // Helper
+    function getDaysInMonth(year, month) {
+      return new Date(year, month + 1, 0).getDate();
     }
 
-    for (let day = 1; day <= daysInMonth; day++) {
+    // MAIN CALENDAR RENDER FUNCTION
+    function generateCalendar(year, month) {
+      calendarBody.innerHTML = '';
+      const daysInMonth = getDaysInMonth(year, month);
+      const firstDay = new Date(year, month, 1).getDay();
 
-      if (row.children.length === 7) {
-        calendarBody.appendChild(row);
-        row = document.createElement('tr');
+      // Load all saved routines
+      const saved = JSON.parse(localStorage.getItem("routines") || "[]");
+
+      let row = document.createElement('tr');
+
+      // Empty placeholders before day 1
+      for (let i = 0; i < firstDay; i++) {
+        row.appendChild(document.createElement('td'));
       }
 
-      const cell = document.createElement('td');
-      cell.innerHTML = day + '<br>';
+      // Generate days
+      for (let day = 1; day <= daysInMonth; day++) {
 
-      // ----- ✨ LOAD ROUTINES FOR THIS DAY ✨ -----
-      const saved = JSON.parse(localStorage.getItem("routines") || "[]");
-      const thisDate = `${month + 1}/${day}/${year}`;
-      const routinesForDay = saved.filter(r => r.date === thisDate);
+        if (row.children.length === 7) {
+          calendarBody.appendChild(row);
+          row = document.createElement('tr');
+        }
 
-      routinesForDay.forEach(r => {
-        const p = document.createElement("div");
-        p.textContent = "📌 " + r.name + " (" + r.totalTime + " min)";
-        p.style.fontSize = "12px";
-        p.style.marginTop = "4px";
-        cell.appendChild(p);
-      });
-      // ------------------------------------------
+        const cell = document.createElement('td');
 
-      const button = document.createElement('button');
-      button.textContent = "Add Routine";
-      button.addEventListener('click', () => {
-        window.location.href = `routine.html?year=${year}&month=${month+1}&day=${day}`;
-      });
+        // Day number
+        cell.innerHTML = `<strong>${day}</strong><br>`;
 
-      cell.appendChild(button);
-      row.appendChild(cell);
+        // ADD ROUTINE BUTTON
+        const btn = document.createElement('button');
+        btn.textContent = "Add Routine";
+        btn.addEventListener('click', () => {
+          window.location.href = `routine.html?year=${year}&month=${month+1}&day=${day}`;
+        });
+        cell.appendChild(btn);
+
+        // ---- SHOW SAVED ROUTINES ----
+        const thisDate = `${month+1}/${day}/${year}`;
+        const routinesForDay = saved.filter(r => r.date === thisDate);
+
+        routinesForDay.forEach(r => {
+          const div = document.createElement("div");
+          div.className = "routine-item";
+          div.textContent = `📌 ${r.name} (${r.totalTime} min)`;
+          cell.appendChild(div);
+        });
+
+        row.appendChild(cell);
+      }
+
+      // Fill remaining cells
+      while (row.children.length < 7) {
+        row.appendChild(document.createElement('td'));
+      }
+
+      calendarBody.appendChild(row);
     }
 
-    while (row.children.length < 7) {
-      row.appendChild(document.createElement('td'));
-    }
-    calendarBody.appendChild(row);
-  }
+    // Render initial month
+    generateCalendar(year, new Date().getMonth());
 
-  generateCalendar(year, new Date().getMonth());
-
-  monthSelect.addEventListener('change', () => {
-    generateCalendar(year, parseInt(monthSelect.value));
-  });
-</script>
+    // Change month
+    monthSelect.addEventListener('change', () => {
+      generateCalendar(year, parseInt(monthSelect.value));
+    });
+  </script>
+</body>
+</html>
