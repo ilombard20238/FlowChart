@@ -6,35 +6,150 @@
   <title>FlowTime - Build a Routine</title>
   <style>
     body { font-family: 'Poppins', sans-serif; background: #f0f4f8; margin:0; padding:0; }
-    header { background: #fff; padding: 20px; text-align: center; box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+    header { background: #fff; padding: 20px; text-align: center; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
     h1 { margin:0; color:#6c4ab6; }
-    .container { padding: 20px; max-width:600px; margin:0 auto; }
-    input, button { padding:10px; margin:5px 0; border-radius:10px; border:1px solid #ccc; width:100%; }
+    .container { padding: 20px; max-width:700px; margin:0 auto; }
+    input, button, select { padding:10px; margin:5px 0; border-radius:10px; border:1px solid #ccc; width:100%; }
+    .step { background:#fff; padding:10px; border-radius:10px; margin-bottom:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
     .routine-list { margin-top:20px; }
-    .routine-item { background:#fff; padding:10px; margin-bottom:10px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .save-btn { background:#6c4ab6; color:white; cursor:pointer; }
+    .add-step-btn { background:#35a865; color:white; cursor:pointer; }
+    .assign-btn { background:#6c4ab6; color:white; cursor:pointer; }
   </style>
 </head>
 <body>
+
   <header>
     <h1>🧩 Build a Routine</h1>
   </header>
+
   <div class="container">
+
+    <h3 id="dateHeader"></h3>
+
+    <!-- Routine Name -->
     <input type="text" id="routineName" placeholder="Routine Name">
-    <button onclick="addRoutine()">Add Routine</button>
-    <div class="routine-list" id="routineList"></div>
+
+    <!-- Add Step Section -->
+    <h3>Add Steps</h3>
+    <div id="stepsContainer"></div>
+
+    <button class="add-step-btn" onclick="addStep()">+ Add Step</button>
+
+    <h3>Total Time: <span id="totalTime">0</span> min</h3>
+
+    <button class="save-btn" onclick="saveRoutine()">💾 Save Routine</button>
+
+    <h3>Saved Routines</h3>
+    <div id="routineList"></div>
   </div>
 
   <script>
-    function addRoutine() {
-      const name = document.getElementById('routineName').value;
-      if(name) {
-        const div = document.createElement('div');
-        div.className = 'routine-item';
-        div.innerText = name;
-        document.getElementById('routineList').appendChild(div);
-        document.getElementById('routineName').value = '';
-      }
+    // ----- 1. READ DATE FROM URL -----
+    const urlParams = new URLSearchParams(window.location.search);
+    const year = urlParams.get("year");
+    const month = urlParams.get("month");
+    const day = urlParams.get("day");
+
+    if (year && month && day) {
+      document.getElementById("dateHeader").innerText =
+        `Creating routine for: ${month}/${day}/${year}`;
     }
+
+    // ----- 2. ADD STEP FUNCTION -----
+    function addStep() {
+      const container = document.getElementById("stepsContainer");
+
+      const stepDiv = document.createElement("div");
+      stepDiv.className = "step";
+
+      stepDiv.innerHTML = `
+        <input type="text" placeholder="Step name" class="step-name">
+        <input type="number" placeholder="Minutes" class="step-time">
+      `;
+
+      container.appendChild(stepDiv);
+
+      updateTotalTime();
+      stepDiv.querySelector(".step-time").addEventListener("input", updateTotalTime);
+    }
+
+    // ----- 3. UPDATE TOTAL TIME -----
+    function updateTotalTime() {
+      let total = 0;
+      document.querySelectorAll(".step-time").forEach(input => {
+        total += Number(input.value) || 0;
+      });
+      document.getElementById("totalTime").innerText = total;
+    }
+
+    // ----- 4. SAVE ROUTINES -----
+    function saveRoutine() {
+      const name = document.getElementById("routineName").value;
+      if (!name) {
+        alert("Please enter a routine name.");
+        return;
+      }
+
+      const steps = [];
+      document.querySelectorAll(".step").forEach(step => {
+        const stepName = step.querySelector(".step-name").value;
+        const stepTime = Number(step.querySelector(".step-time").value);
+        if (stepName && stepTime > 0) {
+          steps.push({ name: stepName, time: stepTime });
+        }
+      });
+
+      if (steps.length === 0) {
+        alert("Add at least one step.");
+        return;
+      }
+
+      const routine = {
+        name,
+        steps,
+        totalTime: steps.reduce((sum, s) => sum + s.time, 0),
+        date: year && month && day ? `${month}/${day}/${year}` : null
+      };
+
+      // Save routine in local storage
+      let saved = JSON.parse(localStorage.getItem("routines") || "[]");
+      saved.push(routine);
+      localStorage.setItem("routines", JSON.stringify(saved));
+
+      displaySavedRoutines();
+      alert("Routine saved!");
+    }
+
+    // ----- 5. DISPLAY SAVED ROUTINES -----
+    function displaySavedRoutines() {
+      const list = document.getElementById("routineList");
+      const saved = JSON.parse(localStorage.getItem("routines") || "[]");
+
+      list.innerHTML = "";
+
+      saved.forEach((routine, index) => {
+        const div = document.createElement("div");
+        div.className = "step";
+
+        div.innerHTML = `
+          <strong>${routine.name}</strong> (${routine.totalTime} min)<br>
+          ${routine.date ? `<em>Assigned to: ${routine.date}</em><br>` : ""}
+          <button class="assign-btn" onclick="assignToCalendar(${index})">📅 Assign to Calendar</button>
+        `;
+
+        list.appendChild(div);
+      });
+    }
+
+    // ----- 6. ASSIGN ROUTINE TO CALENDAR -----
+    function assignToCalendar(index) {
+      const routine = JSON.parse(localStorage.getItem("routines"))[index];
+      alert("Calendar assignment feature coming soon!");
+      // Later: Redirect to calendar with routine preselected
+    }
+
+    displaySavedRoutines();
   </script>
 </body>
 </html>
