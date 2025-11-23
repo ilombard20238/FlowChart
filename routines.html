@@ -1,83 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FlowTime — Routines</title>
-  <style>
-    body { font-family: 'Poppins',sans-serif; background:#f0f4f8; margin:0; }
-    header {
-      background:#fff; padding:14px 20px; display:flex; align-items:center;
-      justify-content:space-between; box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    }
-    header h1 { margin:0; color:#6c4ab6; font-size:18px; }
-    .btn { padding:8px 12px; border-radius:8px; text-decoration:none; color:#fff; background:#6c4ab6; display:inline-block; }
-    .container { max-width:900px; margin:22px auto; padding:0 20px; display:grid; grid-template-columns:1fr 360px; gap:20px; }
-    .card { background:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
-    input, select, button { font:inherit; }
-    .field { margin-bottom:10px; }
-    .field input, .field select { width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; }
-
-    .step-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-    .step-row input { padding:8px; border-radius:8px; border:1px solid #ddd; }
-    .step-row .small { width:90px; }
-    .small-btn { padding:8px; border-radius:8px; border:none; cursor:pointer; }
-
-    .routine-item { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px; }
-    .routine-meta { font-size:13px; color:#555; margin-top:6px; }
-    .actions { display:flex; gap:8px; }
-
-    .danger { background:#ff6b6b; color:#fff; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; }
-    .primary { background:#6c4ab6; color:#fff; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; }
-    .muted { background:#eee; color:#333; border:none; padding:8px 10px; border-radius:8px; cursor:pointer; }
-
-    h2 { margin:0 0 10px 0; }
-
-    /* simple responsive */
-    @media (max-width:900px){
-      .container { grid-template-columns:1fr; }
-    }
-  </style>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FlowTime — Routines</title>
+<style>
+  body{font-family:'Poppins',sans-serif;background:#f0f4f8;margin:0;padding:0}
+  header{background:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+  .btn{background:#6c4ab6;color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none}
+  h1{color:#6c4ab6;margin:0}
+  .container{max-width:900px;margin:22px auto;padding:0 18px;display:grid;grid-template-columns:1fr 360px;gap:20px}
+  .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+  .step-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+  .step-row input{padding:8px;border-radius:8px;border:1px solid #ddd}
+  .muted{background:#eee;border:none;padding:8px;border-radius:8px;cursor:pointer}
+  .primary{background:#6c4ab6;color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer}
+  .danger{background:#ff6b6b;color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer}
+  .routine-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:#fdfdfd;margin-bottom:10px}
+</style>
 </head>
 <body>
 
 <header>
   <a class="btn" href="index.html">🏠 Home</a>
   <h1>🧩 Manage Routines</h1>
-  <div style="width:70px;"></div>
+  <a class="btn" href="calendar.html">Calendar</a>
 </header>
 
 <div class="container">
-  <!-- Left: create / edit -->
   <div class="card">
     <h2 id="editorTitle">Create Routine</h2>
-
-    <div class="field">
-      <input id="routineName" placeholder="Routine name (e.g. Morning Stretch)" />
-    </div>
-
+    <input id="routineName" placeholder="Routine name" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd;margin-bottom:8px"/>
     <div id="stepsList"></div>
-
-    <div style="display:flex; gap:8px; margin-top:8px;">
+    <div style="display:flex;gap:8px;margin-top:8px">
       <button class="primary" onclick="addStepEditor()">+ Add Step</button>
       <button class="muted" onclick="clearEditor()">Clear</button>
     </div>
-
-    <div style="margin-top:12px; display:flex; gap:8px;">
+    <div style="display:flex;gap:8px;margin-top:12px">
       <button class="primary" onclick="saveEditorRoutine()">Save Routine</button>
       <button class="muted" onclick="saveAndAssignPrompt()">Save & Assign to Day</button>
-      <button class="danger" onclick="deleteEditorRoutine()" id="deleteRoutineBtn" style="display:none;">Delete</button>
-    </div>
-
-    <div style="margin-top:12px; font-size:13px; color:#666;">
-      <em>When saving an edited routine, all assignments on calendar will reflect the updated routine.</em>
+      <button class="danger" id="deleteRoutineBtn" style="display:none" onclick="deleteEditorRoutine()">Delete</button>
     </div>
   </div>
 
-  <!-- Right: list of routines & pinned -->
   <div>
-    <div class="card" style="margin-bottom:12px;">
-      <h3>Pinned Routines</h3>
+    <div class="card" style="margin-bottom:12px">
+      <h3>Pinned</h3>
       <div id="pinnedList"></div>
     </div>
 
@@ -88,253 +55,147 @@
   </div>
 </div>
 
-<!-- Small modal for assign date -->
-<div id="assignModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center;">
-  <div style="background:#fff; padding:16px; width:320px; border-radius:12px;">
-    <h3 style="margin:0 0 8px 0;">Assign Routine to Date</h3>
-    <input id="assignDate" type="date" style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd;" />
-    <div style="display:flex; gap:8px; margin-top:10px;">
+<!-- assign modal -->
+<div id="assignModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);align-items:center;justify-content:center">
+  <div style="background:#fff;padding:14px;border-radius:10px;width:320px">
+    <h3>Assign Routine</h3>
+    <input id="assignDate" type="date" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd"/>
+    <div style="display:flex;gap:8px;margin-top:8px">
       <button class="primary" onclick="confirmAssign()">Assign</button>
       <button class="muted" onclick="closeAssignModal()">Cancel</button>
     </div>
-    <input type="hidden" id="assignRoutineId" />
+    <input type="hidden" id="assignRoutineId"/>
   </div>
 </div>
 
 <script>
-/* Data model in localStorage:
-   routines: [ { id, name, steps:[{id,name,time}], totalTime, pinned } ]
-   calendarData: { "YYYY-M-D": [ routineId, ... ] }
-*/
+/* Similar data model across pages */
+function uid(){return Date.now()+Math.floor(Math.random()*1000)}
+function escapeHtml(s){return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
 
-function uid(){ return Date.now() + Math.floor(Math.random()*1000); }
-
-/* ---------- Editor area (create/edit) ---------- */
+/* Editor */
 let editingId = null;
-
-function addStepEditor(step = {id: uid(), name:'', time:''}) {
+function addStepEditor(step={id:uid(),name:'',time:''}){
   const container = document.getElementById('stepsList');
-  const div = document.createElement('div');
-  div.className = 'step-row';
-  div.dataset.stepId = step.id;
-
-  div.innerHTML = `
-    <input class="step-name" placeholder="Step name" value="${escapeHtml(step.name)}" />
-    <input class="step-time small" type="number" placeholder="min" value="${step.time || ''}" />
-    <button class="small-btn" onclick="this.parentElement.remove()">🗑</button>
-  `;
+  const div = document.createElement('div'); div.className='step-row'; div.dataset.stepId = step.id;
+  div.innerHTML = `<input class="step-name" placeholder="Step name" value="${escapeHtml(step.name)}"/><input class="step-time" type="number" placeholder="min" value="${step.time||''}" style="width:90px"/><button onclick="this.parentElement.remove()">🗑</button>`;
   container.appendChild(div);
 }
+function clearEditor(){ editingId=null; document.getElementById('editorTitle').innerText='Create Routine'; document.getElementById('routineName').value=''; document.getElementById('stepsList').innerHTML=''; document.getElementById('deleteRoutineBtn').style.display='none'; }
 
-function clearEditor(){
-  editingId = null;
-  document.getElementById('editorTitle').innerText = 'Create Routine';
-  document.getElementById('routineName').value = '';
-  document.getElementById('stepsList').innerHTML = '';
-  document.getElementById('deleteRoutineBtn').style.display = 'none';
-}
-
-/* Save from editor (create or update) */
 function saveEditorRoutine(){
-  const name = document.getElementById('routineName').value.trim();
-  if(!name) return alert('Please enter routine name');
-
-  const stepRows = Array.from(document.querySelectorAll('#stepsList .step-row'));
-  const steps = stepRows.map(r => {
-    return {
-      id: r.dataset.stepId || uid(),
-      name: r.querySelector('.step-name').value.trim(),
-      time: Number(r.querySelector('.step-time').value) || 0
-    };
-  }).filter(s => s.name);
-
+  const name = document.getElementById('routineName').value.trim(); if(!name) return alert('Enter name');
+  const rows = Array.from(document.querySelectorAll('#stepsList .step-row'));
+  const steps = rows.map(r=>({ id: r.dataset.stepId||uid(), name: r.querySelector('.step-name').value.trim(), time: Number(r.querySelector('.step-time').value)||0 })).filter(s=>s.name);
   const total = steps.reduce((a,b)=>a+(b.time||0),0);
-
   let routines = JSON.parse(localStorage.getItem('routines')||'[]');
-
   if(editingId){
-    // update
-    routines = routines.map(r => {
-      if(r.id === editingId){
-        return {...r, name, steps, totalTime: total};
-      }
-      return r;
-    });
+    routines = routines.map(r => r.id===editingId ? {...r, name, steps, totalTime: total} : r);
     alert('Routine updated');
   } else {
-    const r = { id: uid(), name, steps, totalTime: total, pinned:false };
-    routines.push(r);
+    routines.push({ id: uid(), name, steps, totalTime: total, pinned:false });
     alert('Routine created');
   }
-
   localStorage.setItem('routines', JSON.stringify(routines));
-  clearEditor();
-  renderAll();
+  clearEditor(); renderAll();
 }
 
-/* Delete routine from editor when editing */
+/* Delete routine being edited */
 function deleteEditorRoutine(){
   if(!editingId) return;
   if(!confirm('Delete this routine?')) return;
-  let routines = JSON.parse(localStorage.getItem('routines')||'[]');
-  routines = routines.filter(r => r.id !== editingId);
+  let routines = JSON.parse(localStorage.getItem('routines')||'[]'); routines = routines.filter(r=>r.id!==editingId);
   localStorage.setItem('routines', JSON.stringify(routines));
-  // also remove from calendar assignments
+  // remove assignments
   const cd = JSON.parse(localStorage.getItem('calendarData')||'{}');
-  Object.keys(cd).forEach(d => cd[d] = cd[d].filter(id => id !== editingId));
+  Object.keys(cd).forEach(k=>{ cd[k] = cd[k].filter(x=>x!==editingId); if(cd[k].length===0) delete cd[k]; });
   localStorage.setItem('calendarData', JSON.stringify(cd));
-  alert('Routine deleted');
-  clearEditor();
-  renderAll();
+  alert('Deleted');
+  clearEditor(); renderAll();
 }
 
-/* Edit routine helper */
+/* Edit routine */
 function editRoutine(id){
-  const routines = JSON.parse(localStorage.getItem('routines')||'[]');
-  const r = routines.find(x=>x.id===id);
+  const routines = JSON.parse(localStorage.getItem('routines')||'[]'); const r = routines.find(x=>x.id===id);
   if(!r) return;
-  editingId = id;
-  document.getElementById('editorTitle').innerText = 'Edit Routine';
-  document.getElementById('routineName').value = r.name;
-  const container = document.getElementById('stepsList');
-  container.innerHTML = '';
-  r.steps.forEach(s => addStepEditor(s));
+  editingId = id; document.getElementById('editorTitle').innerText='Edit Routine'; document.getElementById('routineName').value = r.name;
+  const container = document.getElementById('stepsList'); container.innerHTML='';
+  r.steps.forEach(s=> addStepEditor(s));
   document.getElementById('deleteRoutineBtn').style.display = 'inline-block';
 }
 
 /* Pin toggle */
 function togglePin(id){
-  let routines = JSON.parse(localStorage.getItem('routines')||'[]');
-  routines = routines.map(r => r.id===id ? {...r, pinned: !r.pinned} : r);
-  localStorage.setItem('routines', JSON.stringify(routines));
-  renderAll();
+  let routines = JSON.parse(localStorage.getItem('routines')||'[]'); routines = routines.map(r=> r.id===id ? {...r, pinned:!r.pinned}:r); localStorage.setItem('routines', JSON.stringify(routines)); renderAll();
 }
 
-/* Assign from routines page (open modal) */
-function openAssignModal(routineId){
-  document.getElementById('assignRoutineId').value = routineId;
-  document.getElementById('assignDate').value = '';
-  document.getElementById('assignModal').style.display = 'flex';
-}
+/* Assign modal from routines page */
+function openAssignModal(routineId){ document.getElementById('assignRoutineId').value = routineId; document.getElementById('assignDate').value = ''; document.getElementById('assignModal').style.display='flex'; }
 function closeAssignModal(){ document.getElementById('assignModal').style.display='none'; }
 function confirmAssign(){
-  const date = document.getElementById('assignDate').value;
-  if(!date) return alert('Choose a date');
+  const dateVal = document.getElementById('assignDate').value;
+  if(!dateVal) return alert('Choose date');
+  const iso = dateVal; // format YYYY-MM-DD
+  const [y,m,d] = iso.split('-');
+  const key = `${y}-${Number(m)}-${Number(d)}`;
   const rid = Number(document.getElementById('assignRoutineId').value);
-  assignRoutineToDay(date, rid);
-  closeAssignModal();
-  renderAll();
-  alert('Assigned to '+date);
+  let cd = JSON.parse(localStorage.getItem('calendarData')||'{}'); if(!cd[key]) cd[key] = []; cd[key].push(rid); cd[key] = Array.from(new Set(cd[key])); localStorage.setItem('calendarData', JSON.stringify(cd));
+  closeAssignModal(); renderAll(); alert('Assigned to '+key);
 }
 
-/* ---------- Calendar assignment helpers ---------- */
-function assignRoutineToDay(dateISO, routineId){
-  // dateISO should be YYYY-MM-DD
-  const key = isoToKey(dateISO);
-  let cd = JSON.parse(localStorage.getItem('calendarData')||'{}');
-  if(!cd[key]) cd[key]=[];
-  cd[key].push(Number(routineId));
-  // ensure unique
-  cd[key] = Array.from(new Set(cd[key]));
-  localStorage.setItem('calendarData', JSON.stringify(cd));
-}
-
-/* ---------- Render lists ---------- */
+/* Render lists */
 function renderAll(){
-  renderPinned();
-  renderRoutinesList();
+  renderPinned(); renderRoutinesList();
 }
 
-/* Pinned */
+/* Pinned list */
 function renderPinned(){
-  const pinnedDiv = document.getElementById('pinnedList');
-  pinnedDiv.innerHTML = '';
-  const routines = JSON.parse(localStorage.getItem('routines')||'[]');
-  const pinned = routines.filter(r=>r.pinned);
-  if(pinned.length===0) pinnedDiv.innerHTML = '<div style="color:#777;">No pinned routines</div>';
+  const pinnedDiv = document.getElementById('pinnedList'); pinnedDiv.innerHTML = '';
+  const routines = JSON.parse(localStorage.getItem('routines')||'[]'); const pinned = routines.filter(r=>r.pinned);
+  if(pinned.length===0) pinnedDiv.innerHTML = '<div style="color:#777">No pinned</div>';
   pinned.forEach(r=>{
-    const el = document.createElement('div');
-    el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center';
-    el.innerHTML = `<div>
-      <strong>${escapeHtml(r.name)}</strong><div class="routine-meta">${r.totalTime} min • ${r.steps.length} steps</div>
-    </div>`;
+    const el = document.createElement('div'); el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center'; el.style.padding='8px'; el.style.marginBottom='8px'; el.style.borderRadius='8px'; el.style.background='#fff';
+    el.innerHTML = `<div><strong>${escapeHtml(r.name)}</strong><div style="font-size:13px;color:#555">${r.totalTime} min • ${r.steps.length} steps</div></div>`;
     const actions = document.createElement('div');
-    const btnEdit = document.createElement('button'); btnEdit.className='muted'; btnEdit.textContent='Edit';
-    btnEdit.onclick = ()=>editRoutine(r.id);
-    const btnUnpin = document.createElement('button'); btnUnpin.className='primary'; btnUnpin.textContent='Unpin';
-    btnUnpin.style.background='#6c4ab6';
-    btnUnpin.onclick = ()=>{ togglePin(r.id); };
-    actions.appendChild(btnEdit); actions.appendChild(btnUnpin);
-    el.appendChild(actions);
-    pinnedDiv.appendChild(el);
+    const e = document.createElement('a'); e.href=`routines.html?edit=${r.id}`; e.style.marginRight='8px'; e.textContent='Edit';
+    const assign = document.createElement('button'); assign.className='muted'; assign.textContent='Assign'; assign.onclick = ()=> openAssignModal(r.id);
+    const unpin = document.createElement('button'); unpin.className='primary'; unpin.textContent='Unpin'; unpin.style.background='#6c4ab6'; unpin.onclick = ()=> togglePin(r.id);
+    actions.appendChild(e); actions.appendChild(assign); actions.appendChild(unpin);
+    el.appendChild(actions); pinnedDiv.appendChild(el);
   });
 }
 
 /* Full routines list */
 function renderRoutinesList(){
-  const box = document.getElementById('routinesList');
-  box.innerHTML = '';
-  const routines = JSON.parse(localStorage.getItem('routines')||'[]').slice().sort((a,b)=>b.pinned - a.pinned);
-  if(routines.length===0) box.innerHTML = '<div style="color:#777;">No routines yet</div>';
+  const box = document.getElementById('routinesList'); box.innerHTML = ''; const routines = JSON.parse(localStorage.getItem('routines')||'[]').slice().sort((a,b)=>b.pinned - a.pinned);
+  if(routines.length===0) box.innerHTML = '<div style="color:#777">No routines yet</div>';
   routines.forEach(r=>{
-    const div = document.createElement('div');
-    div.className='routine-item';
-    const left = document.createElement('div');
-    left.innerHTML = `<div><strong>${escapeHtml(r.name)}</strong> ${r.pinned?'<small style="color:#6c4ab6"> • pinned</small>':''}</div>
-                      <div class="routine-meta">${r.totalTime} min • ${r.steps.length} steps</div>`;
-    const right = document.createElement('div'); right.className='actions';
-    const btnEdit = document.createElement('button'); btnEdit.className='muted'; btnEdit.textContent='Edit';
-    btnEdit.onclick = ()=>editRoutine(r.id);
-    const btnAssign = document.createElement('button'); btnAssign.className='primary'; btnAssign.textContent='Assign';
-    btnAssign.onclick = ()=>openAssignModal(r.id);
-    const btnPin = document.createElement('button'); btnPin.className='primary'; btnPin.style.background = r.pinned ? '#999' : '#6c4ab6';
-    btnPin.textContent = r.pinned ? 'Unpin' : 'Pin';
-    btnPin.onclick = ()=>togglePin(r.id);
-    const btnDelete = document.createElement('button'); btnDelete.className='danger'; btnDelete.textContent='Delete';
-    btnDelete.onclick = ()=>{
+    const div = document.createElement('div'); div.className='routine-item';
+    div.innerHTML = `<div><strong>${escapeHtml(r.name)}</strong><div style="font-size:13px;color:#555">${r.totalTime} min • ${r.steps.length} steps</div></div>`;
+    const actions = document.createElement('div');
+    const edit = document.createElement('a'); edit.href=`routines.html?edit=${r.id}`; edit.textContent='Edit'; edit.style.marginRight='8px';
+    const assign = document.createElement('button'); assign.className='muted'; assign.textContent='Assign'; assign.onclick = ()=> openAssignModal(r.id);
+    const pin = document.createElement('button'); pin.className='primary'; pin.textContent = r.pinned ? 'Unpin' : 'Pin'; pin.onclick = ()=> togglePin(r.id);
+    const del = document.createElement('button'); del.className='danger'; del.textContent='Delete'; del.onclick = ()=>{
       if(!confirm('Delete routine?')) return;
-      let arr = JSON.parse(localStorage.getItem('routines')||'[]'); arr = arr.filter(x=>x.id!==r.id);
-      localStorage.setItem('routines', JSON.stringify(arr));
-      // remove from calendar
-      const cd = JSON.parse(localStorage.getItem('calendarData')||'{}');
-      Object.keys(cd).forEach(k => { cd[k] = cd[k].filter(x=>x!==r.id); if(cd[k].length===0) delete cd[k]; });
-      localStorage.setItem('calendarData', JSON.stringify(cd));
+      let arr = JSON.parse(localStorage.getItem('routines')||'[]'); arr = arr.filter(x=>x.id!==r.id); localStorage.setItem('routines', JSON.stringify(arr));
+      const cd = JSON.parse(localStorage.getItem('calendarData')||'{}'); Object.keys(cd).forEach(k=>{ cd[k]=cd[k].filter(x=>x!==r.id); if(cd[k].length===0) delete cd[k]; }); localStorage.setItem('calendarData', JSON.stringify(cd));
       renderAll();
     };
-
-    right.appendChild(btnEdit);
-    right.appendChild(btnAssign);
-    right.appendChild(btnPin);
-    right.appendChild(btnDelete);
-
-    div.appendChild(left); div.appendChild(right);
-    box.appendChild(div);
+    actions.appendChild(edit); actions.appendChild(assign); actions.appendChild(pin); actions.appendChild(del);
+    div.appendChild(actions); box.appendChild(div);
   });
 }
 
-/* ---------- Utility ---------- */
-function escapeHtml(s){ return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
-function isoToKey(iso){ // iso YYYY-MM-DD -> key YYYY-M-D (no leading zero)
-  const [y,m,d] = iso.split('-'); return `${y}-${Number(m)}-${Number(d)}`;
-}
+/* Save & Assign Prompt (from editor) */
+function saveAndAssignPrompt(){ saveEditorRoutine(); const routines = JSON.parse(localStorage.getItem('routines')||'[]'); const r = routines[routines.length-1]; if(!r) return alert('No routine'); document.getElementById('assignRoutineId').value = r.id; document.getElementById('assignDate').value=''; document.getElementById('assignModal').style.display='flex'; }
 
-/* Save & assign prompt (from editor) */
-function saveAndAssignPrompt(){
-  // Save routine first
-  saveEditorRoutine();
-  // if we just created, editingId was null; last created routine is the newest
-  const routines = JSON.parse(localStorage.getItem('routines')||'[]');
-  const r = routines[routines.length-1];
-  if(!r) return alert('No routine to assign');
-  document.getElementById('assignRoutineId').value = r.id;
-  document.getElementById('assignDate').value = '';
-  document.getElementById('assignModal').style.display = 'flex';
+/* Initialization & URL param handling (?edit=ID triggers editor open) */
+function readParams(){
+  const p = new URLSearchParams(location.search); const edit = p.get('edit');
+  if(edit){ setTimeout(()=> editRoutine(Number(edit)), 200); }
 }
-
-/* ---------- Init ---------- */
-(function init(){
-  renderAll();
-})();
+(function init(){ renderAll(); readParams(); })();
 </script>
 
 </body>
