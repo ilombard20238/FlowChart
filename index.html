@@ -1,237 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>FlowTime — Home</title>
 <style>
-  body{font-family:'Poppins',sans-serif;background:#f0f4f8;margin:0;padding:0}
-  header{background:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-  h1{color:#6c4ab6;margin:0}
-  .btn{background:#6c4ab6;color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none}
-  .wrap{max-width:1000px;margin:22px auto;padding:0 18px;display:grid;grid-template-columns:1fr 360px;gap:20px}
-  .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-  .mini-cal {text-align:center}
-  .live-clock{font-size:20px;font-weight:600;color:#333}
-  .date-large{font-size:16px;color:#555;margin-bottom:6px}
-  .routine-list{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-  .routine-row{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:10px;background:#f7f7ff}
-  .small{font-size:13px;color:#666}
-  .action-btn{padding:6px 10px;border-radius:8px;border:none;cursor:pointer}
-  .start-btn{background:#6c4ab6;color:#fff}
-  .muted{background:#eee}
-  .pinned-grid{display:flex;flex-direction:column;gap:8px}
-  .pinned-card{padding:10px;border-radius:10px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.04);display:flex;justify-content:space-between;align-items:center}
-  .link-small{font-size:13px;color:#6c4ab6;text-decoration:none;margin-left:8px}
+  /* ---------- Palette 2: Strawberry Milk ---------- */
+  :root{
+    --bg: #fff7f9;
+    --card: #ffffff;
+    --accent-1: #FFBFD8; /* strawberry milk pink */
+    --accent-2: #FFD6A5; /* peach */
+    --accent-3: #CAFFBF; /* mint */
+    --accent-4: #9BF6FF; /* aqua */
+    --accent-5: #BDB2FF; /* lavender */
+    --muted: #7b6b7a;
+    --joy: #ff8fab;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg, #fff9fb 0%, #fff7f9 100%);
+    color:#332;
+  }
+
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 22px; background:transparent;
+  }
+
+  .logo {
+    display:flex; gap:12px; align-items:center;
+  }
+  .brand {
+    display:flex; flex-direction:column; line-height:1;
+  }
+  .brand .title { font-size:20px; font-weight:700; color:var(--accent-5); letter-spacing:0.5px; }
+  .brand .sub { font-size:12px; color:var(--muted); }
+
+  .nav {
+    display:flex; gap:10px; align-items:center;
+  }
+
+  a.btn {
+    text-decoration:none; padding:10px 12px; border-radius:14px; font-weight:600;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  a.btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+  .btn-primary { background: linear-gradient(90deg,var(--accent-5),var(--accent-1)); color:#fff; }
+  .btn-ghost { background: transparent; border: none; color:var(--muted); font-weight:600; }
+
+  /* layout */
+  .wrap { max-width:1140px; margin:18px auto; padding:0 18px; display:grid; grid-template-columns:1fr 400px; gap:20px; align-items:start; }
+  @media(max-width:1000px){ .wrap { grid-template-columns:1fr } }
+
+  .card {
+    background:var(--card); border-radius:22px; padding:18px; box-shadow: 0 10px 30px rgba(172,152,180,0.08);
+    transition: transform .18s ease;
+  }
+
+  .welcome {
+    display:flex; gap:18px; align-items:center;
+  }
+  .blob {
+    width:86px; height:86px; border-radius:20px; display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); color:white; font-size:32px; box-shadow:0 8px 20px rgba(255,160,190,0.28);
+  }
+
+  h2 { margin:0; color:#3a2b3a; }
+  p.lead { margin:8px 0 0 0; color:var(--muted); font-size:14px; }
+
+  /* pinned grid */
+  .pinned-grid { margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media(max-width:720px){ .pinned-grid{ grid-template-columns:1fr } }
+
+  .pinned-card {
+    padding:12px; border-radius:14px; background: linear-gradient(180deg,#fff,#fff4f7);
+    display:flex; flex-direction:column; gap:8px; box-shadow:0 10px 18px rgba(255,160,190,0.06);
+    transform-origin:center; transition: transform .18s cubic-bezier(.22,.9,.36,1);
+  }
+  .pinned-card:hover{ transform: translateY(-6px) rotate(-1deg); }
+
+  .routine-title { font-weight:700; color:#5a2b4a; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .meta { font-size:13px; color:var(--muted); }
+
+  .card-actions { display:flex; gap:8px; margin-top:6px; }
+  .tiny { padding:8px 10px; border-radius:10px; border:none; cursor:pointer; font-weight:700; box-shadow: 0 6px 14px rgba(0,0,0,0.05); }
+  .play { background: linear-gradient(90deg,var(--accent-3),var(--accent-4)); color:#093; }
+  .edit { background: linear-gradient(90deg,var(--accent-5),var(--accent-1)); color:#fff; }
+  .assign { background: #fff; color:var(--accent-5); border:1px dashed rgba(180,120,170,0.25); }
+  .del { background:#fff; color:#ff6b6b; border:1px solid rgba(255,107,107,0.12); }
+
+  /* TODAY area */
+  .today-list { margin-top:12px; display:flex; flex-direction:column; gap:10px; }
+  .today-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-radius:12px; background: linear-gradient(180deg,#fff,#fffbfb); box-shadow: 0 4px 10px rgba(170,140,170,0.04); }
+  .play-all { margin-top:10px; padding:10px; border-radius:13px; background:linear-gradient(90deg,var(--accent-2),var(--accent-3)); color:#333; font-weight:800; cursor:pointer; }
+
+  /* mini calendar widget */
+  .widget { text-align:center; position:sticky; top:18px; }
+  .date-large { font-weight:800; color:#4b2a4b; font-size:18px; }
+  .live-clock { font-weight:700; color:#633a63; font-size:20px; margin-top:6px; }
+  .widget .todayList { margin-top:12px; display:flex; flex-direction:column; gap:8px; align-items:stretch; }
+
   /* timer UI */
-  .timer-area{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#f6f6ff);text-align:center}
-  .step-name{font-weight:600}
-  .time-remaining{font-size:28px;margin-top:6px;color:#333}
-  .control-row{display:flex;gap:8px;justify-content:center;margin-top:8px}
-  .confetti-canvas{position:relative;height:160px;overflow:hidden}
-  canvas.confetti{position:absolute;inset:0;pointer-events:none}
-  @media(max-width:980px){.wrap{grid-template-columns:1fr}}
+  .timer {
+    margin-top:12px; padding:12px; border-radius:12px; background: linear-gradient(180deg, #fff,#fffaf6); box-shadow:0 8px 24px rgba(210,160,200,0.06);
+  }
+  .step-name { font-weight:800; color:#6b376b; }
+  .time-remaining { font-size:28px; color:#4f2a4f; margin-top:6px; }
+  .controls { display:flex; gap:8px; justify-content:center; margin-top:10px; }
+
+  /* confetti canvas */
+  .confetti-canvas { position:relative; height:150px; margin-top:10px; overflow:hidden; border-radius:12px; }
+
+  /* playful micro-animations */
+  .sparkle { display:inline-block; transform-origin:center; animation: floaty 3s ease-in-out infinite; opacity:0.9; }
+  @keyframes floaty { 0%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } 100%{ transform: translateY(0) } }
 </style>
 </head>
 <body>
-
 <header>
-  <a class="btn" href="index.html">🏠 Home</a>
-  <h1>FlowTime</h1>
-  <a class="btn" href="routines.html">Manage Routines</a>
+  <div class="logo">
+    <div class="blob">🍓</div>
+    <div class="brand">
+      <div class="title">FlowTime</div>
+      <div class="sub">cute routines, big wins</div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="btn btn-ghost" href="calendar.html">Calendar</a>
+    <a class="btn btn-primary" href="routines.html">Manage Routines</a>
+  </div>
 </header>
 
-<div class="wrap">
-  <!-- Left: main area (could be future content) -->
-  <div class="card">
-    <h2 style="margin:0 0 8px 0">Welcome to FlowTime</h2>
-    <p style="color:#555;margin-top:8px">Quick access to your pinned routines and today's schedule.</p>
+<main class="wrap">
+  <!-- left -->
+  <section class="card">
+    <div class="welcome">
+      <div>
+        <h2>Hi — let's make today delightful ✨</h2>
+        <p class="lead">Quick start your pinned routines or run everything for today with a single tap.</p>
+      </div>
+    </div>
 
     <div style="margin-top:14px">
       <h3 style="margin:0 0 8px 0">Pinned Routines</h3>
-      <div id="pinnedArea" class="pinned-grid"></div>
+      <div class="pinned-grid" id="pinnedGrid"></div>
     </div>
 
     <div style="margin-top:14px">
-      <h3 style="margin:0 0 8px 0">Today's Assigned Routines</h3>
-      <div id="todayArea"></div>
+      <h3 style="margin:0 0 8px 0">Today's Routines</h3>
+      <div id="todayArea" class="today-list"></div>
+      <button id="playAllBtn" class="play-all" style="display:none">▶ Play All Routines Today</button>
     </div>
-  </div>
+  </section>
 
-  <!-- Right: mini calendar widget -->
-  <div class="card mini-cal">
+  <!-- widget -->
+  <aside class="card widget">
     <div class="date-large" id="dateLabel"></div>
-    <div class="live-clock" id="liveClock">--:--:--</div>
+    <div class="live-clock" id="liveClock">--:--</div>
 
     <div style="margin-top:12px">
-      <strong>Routines for today</strong>
-      <div id="todayList" class="routine-list"></div>
+      <strong>Today</strong>
+      <div class="todayList" id="widgetTodayList"></div>
     </div>
 
-    <!-- Timer / confetti area -->
-    <div id="timerWidget" class="timer-area" style="display:none;margin-top:12px">
-      <div id="timerStep" class="step-name"></div>
-      <div id="timerRemaining" class="time-remaining"></div>
-      <div id="timerSub" class="small"></div>
-      <div class="control-row" id="timerControls">
-        <button class="action-btn muted" id="pauseBtn">Pause</button>
-        <button class="action-btn muted" id="stopBtn">Stop</button>
+    <div id="timerArea" class="timer" style="display:none">
+      <div class="step-name" id="timerStepName"></div>
+      <div class="time-remaining" id="timerRemaining">00:00</div>
+      <div class="controls">
+        <button class="tiny" id="pauseBtn">Pause</button>
+        <button class="tiny" id="skipBtn">Skip</button>
+        <button class="tiny" id="stopBtn">Stop</button>
       </div>
-      <div class="confetti-canvas" id="confettiArea" style="display:none; margin-top:10px;">
-        <canvas class="confetti" id="confettiCanvas"></canvas>
+      <div class="confetti-canvas" id="confettiArea" style="display:none">
+        <canvas id="confettiCanvas" class="confetti"></canvas>
       </div>
     </div>
-  </div>
-</div>
+  </aside>
+</main>
 
 <script>
-/* Shared storage shape:
-   routines: [{id,name,steps:[{id,name,time}], totalTime, pinned}]
-   calendarData: { "YYYY-M-D": [ routineId, ... ] }
-*/
+/* =========================
+   Data model in localStorage:
+   - routines: [{id,name,steps:[{id,name,time}], totalTime, pinned}]
+   - calendarData: {"YYYY-M-D": [routineId, ...]}
+   ========================= */
 
-/* Live clock and date */
-function pad(n){return n<10?'0'+n:n}
+const pad = n => n < 10 ? '0'+n : ''+n;
+function isoTodayKey(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+function uid(){ return Date.now() + Math.floor(Math.random()*1000); }
+function escapeHtml(s){ return (s||'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* ---------- Live clock ---------- */
 function updateClock(){
   const now = new Date();
-  document.getElementById('liveClock').innerText = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
-  document.getElementById('dateLabel').innerText = now.toLocaleString('default',{weekday:'long'}) + ', ' + now.toLocaleDateString();
+  document.getElementById('liveClock').innerText = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  document.getElementById('dateLabel').innerText = now.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric' });
 }
 setInterval(updateClock, 1000); updateClock();
 
-/* Utilities */
-function uid(){ return Date.now() + Math.floor(Math.random()*1000); }
-function isoTodayKey(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
-function escapeHtml(s){ return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+/* ---------- Render functions ---------- */
+function getRoutines(){ return JSON.parse(localStorage.getItem('routines') || '[]'); }
+function getCalendar(){ return JSON.parse(localStorage.getItem('calendarData') || '{}'); }
 
-/* Render pinned routines */
 function renderPinned(){
-  const area = document.getElementById('pinnedArea'); area.innerHTML='';
-  const routines = JSON.parse(localStorage.getItem('routines') || '[]');
-  const pinned = routines.filter(r=>r.pinned);
-  if(pinned.length===0) area.innerHTML = '<div style="color:#777">No pinned routines</div>';
-  pinned.forEach(r=>{
-    const row = document.createElement('div'); row.className='pinned-card';
-    const left = document.createElement('div');
-    left.innerHTML = `<div><strong>${escapeHtml(r.name)}</strong></div><div class="small">${r.totalTime} min • ${r.steps.length} steps</div>`;
+  const grid = document.getElementById('pinnedGrid');
+  grid.innerHTML = '';
+  const routines = getRoutines().filter(r=>r.pinned);
+  if(routines.length === 0){ grid.innerHTML = '<div style="color:#777">No pinned routines yet — pin some!</div>'; return; }
+  routines.forEach(r => {
+    const card = document.createElement('div'); card.className='pinned-card';
+    card.innerHTML = `<div style="display:flex;flex-direction:column">
+      <div class="routine-title"><span>${escapeHtml(r.name)}</span><small class="meta">${r.totalTime} min</small></div>
+      <div class="meta">${r.steps.length} steps</div>
+    </div>`;
+    const actions = document.createElement('div'); actions.className='card-actions';
+    const play = document.createElement('button'); play.className='tiny play'; play.textContent='▶ Play'; play.onclick = ()=> startRoutineById(r.id);
+    const edit = document.createElement('a'); edit.className='tiny edit'; edit.href = `routines.html?edit=${r.id}`; edit.textContent='✎ Edit';
+    const assign = document.createElement('a'); assign.className='tiny assign'; assign.href = `calendar.html?select=${isoTodayKey()}&openAssign=${r.id}`; assign.textContent='📅 Assign';
+    const del = document.createElement('button'); del.className='tiny del'; del.textContent='🗑'; del.onclick = ()=> { if(confirm('Delete pinned routine? This removes it entirely.')) deleteRoutineById(r.id); };
+    actions.appendChild(play); actions.appendChild(edit); actions.appendChild(assign); actions.appendChild(del);
+    card.appendChild(actions);
+    grid.appendChild(card);
+  });
+}
+
+/* ---------- Today's routines render + play all ---------- */
+function renderToday(){
+  const box = document.getElementById('todayArea');
+  const widgetList = document.getElementById('widgetTodayList');
+  box.innerHTML = ''; widgetList.innerHTML = '';
+  const key = isoTodayKey();
+  const cd = getCalendar();
+  const ids = cd[key] || [];
+  const routines = getRoutines();
+
+  if(ids.length === 0){
+    box.innerHTML = '<div style="color:#777">No routines scheduled for today</div>';
+    widgetList.innerHTML = '<div style="color:#777">No routines</div>';
+    document.getElementById('playAllBtn').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('playAllBtn').style.display = 'block';
+  document.getElementById('playAllBtn').onclick = () => playAllForToday(ids.slice());
+
+  ids.forEach(id => {
+    const r = routines.find(x=>x.id === id);
+    if(!r) return;
+    // main list row
+    const row = document.createElement('div'); row.className='today-row';
+    const left = document.createElement('div'); left.innerHTML = `<div style="font-weight:800;color:#5a2b4a">${escapeHtml(r.name)}</div><div class="meta">${r.steps.length} steps • ${r.totalTime} min</div>`;
     const right = document.createElement('div');
-    // Edit link -> routines.html?edit=<id>
-    const editLink = document.createElement('a'); editLink.className='link-small'; editLink.href = `routines.html?edit=${r.id}`; editLink.textContent='Edit';
-    // Assign link -> calendar.html?select=<YYYY-M-D>&openAssign=<id>
-    const todayKey = isoTodayKey(); // default quick assign opens today
-    const assignLink = document.createElement('a'); assignLink.className='link-small'; assignLink.href = `calendar.html?select=${todayKey}&openAssign=${r.id}`; assignLink.textContent='Assign';
-    right.appendChild(editLink); right.appendChild(assignLink);
+    const play = document.createElement('button'); play.className='tiny play'; play.textContent='▶ Play'; play.onclick = ()=> startRoutineById(r.id);
+    const edit = document.createElement('a'); edit.className='tiny edit'; edit.href = `routines.html?edit=${r.id}`; edit.textContent='✎';
+    const assign = document.createElement('a'); assign.className='tiny assign'; assign.href = `calendar.html?select=${key}&openAssign=${r.id}`; assign.textContent='📅';
+    const remove = document.createElement('button'); remove.className='tiny del'; remove.textContent='Remove'; remove.onclick = ()=>{
+      if(!confirm('Remove this routine from today?')) return;
+      removeRoutineFromDay(key, r.id);
+    };
+    right.appendChild(play); right.appendChild(edit); right.appendChild(assign); right.appendChild(remove);
     row.appendChild(left); row.appendChild(right);
-    area.appendChild(row);
+    box.appendChild(row);
+
+    // widget mini list
+    const wrow = document.createElement('div'); wrow.style.display='flex'; wrow.style.justifyContent='space-between'; wrow.style.alignItems='center'; wrow.style.padding='8px'; wrow.style.borderRadius='10px'; wrow.style.background='#fff';
+    wrow.innerHTML = `<div style="font-weight:700">${escapeHtml(r.name)}</div>`;
+    const wp = document.createElement('button'); wp.className='tiny play'; wp.textContent='Start'; wp.onclick = ()=> startRoutineById(r.id);
+    wrow.appendChild(wp);
+    widgetList.appendChild(wrow);
   });
 }
 
-/* Render today's assigned routines (main area) */
-function renderTodayAssigned(){
-  const area = document.getElementById('todayArea'); area.innerHTML='';
-  const key = isoTodayKey();
-  const cd = JSON.parse(localStorage.getItem('calendarData') || '{}');
-  const ids = cd[key] || [];
-  const routines = JSON.parse(localStorage.getItem('routines') || '[]');
-
-  if(ids.length===0){ area.innerHTML='<div style="color:#777">No routines for today</div>'; return; }
-
-  ids.forEach(id=>{
-    const r = routines.find(x=>x.id===id);
-    if(!r) return;
-    const row = document.createElement('div'); row.className='routine-row';
-    row.innerHTML = `<div>
-        <strong>${escapeHtml(r.name)}</strong><div class="small">${r.totalTime} min • ${r.steps.length} steps</div>
-      </div>`;
-    const actions = document.createElement('div');
-    const startBtn = document.createElement('button'); startBtn.className='action-btn start-btn'; startBtn.textContent='Start Routine';
-    startBtn.onclick = ()=> startRoutineById(id);
-    const editLink = document.createElement('a'); editLink.href=`routines.html?edit=${r.id}`; editLink.className='link-small'; editLink.textContent='Edit';
-    const assignLink = document.createElement('a'); assignLink.href=`calendar.html?select=${key}&openAssign=${r.id}`; assignLink.className='link-small'; assignLink.textContent='Assign';
-    actions.appendChild(startBtn); actions.appendChild(editLink); actions.appendChild(assignLink);
-    row.appendChild(actions);
-    area.appendChild(row);
-  });
+/* ---------- Data mutations ---------- */
+function removeRoutineFromDay(key, id){
+  const cd = getCalendar();
+  cd[key] = (cd[key]||[]).filter(x=>x!==id);
+  if((cd[key]||[]).length === 0) delete cd[key];
+  localStorage.setItem('calendarData', JSON.stringify(cd));
+  // update UI instantly
+  renderToday(); renderPinned(); triggerCrossTab();
+}
+function deleteRoutineById(id){
+  let arr = getRoutines().filter(r=>r.id !== id);
+  localStorage.setItem('routines', JSON.stringify(arr));
+  // remove from calendar
+  const cd = getCalendar();
+  Object.keys(cd).forEach(k => { cd[k] = cd[k].filter(x=>x!==id); if(cd[k].length === 0) delete cd[k]; });
+  localStorage.setItem('calendarData', JSON.stringify(cd));
+  renderPinned(); renderToday(); triggerCrossTab();
 }
 
-/* Render mini today list (right widget) */
-function renderTodayListWidget(){
-  const list = document.getElementById('todayList'); list.innerHTML='';
-  const key = isoTodayKey();
-  const cd = JSON.parse(localStorage.getItem('calendarData') || '{}');
-  const ids = cd[key] || [];
-  const routines = JSON.parse(localStorage.getItem('routines') || '[]');
+/* ---------- Timer system (step-by-step & play-all) ---------- */
+let playQueue = []; // array of {routineId,...} for Play All
+let timerState = null; // {routineId, steps, idx, remaining, paused, interval}
 
-  if(ids.length===0){ list.innerHTML='<div style="color:#777">No routines</div>'; return; }
-
-  ids.forEach(id=>{
-    const r = routines.find(x=>x.id===id);
-    if(!r) return;
-    const row = document.createElement('div'); row.className='routine-row';
-    row.innerHTML = `<div><strong>${escapeHtml(r.name)}</strong><div class="small">${r.steps.length} steps</div></div>`;
-    const start = document.createElement('button'); start.className='action-btn start-btn'; start.textContent='Start';
-    start.onclick = ()=> startRoutineById(id);
-    row.appendChild(start);
-    list.appendChild(row);
-  });
-}
-
-/* ----------------- Step-by-step timer -----------------
-   - Each step has its own "time" in minutes (number)
-   - When a step finishes: play ding, move to next step automatically
-   - After last step: show confetti (inside widget) and stop
-   - Provide Pause / Stop buttons
-*/
-
-let timerState = null; // {routineId, steps, idx, remainingSeconds, timerInterval}
-const timerWidget = document.getElementById('timerWidget');
-const timerStepEl = document.getElementById('timerStep');
-const timerRemainingEl = document.getElementById('timerRemaining');
-const timerSubEl = document.getElementById('timerSub');
+const timerArea = document.getElementById('timerArea');
+const timerStepName = document.getElementById('timerStepName');
+const timerRemaining = document.getElementById('timerRemaining');
 const pauseBtn = document.getElementById('pauseBtn');
+const skipBtn = document.getElementById('skipBtn');
 const stopBtn = document.getElementById('stopBtn');
-const confettiArea = document.getElementById('confettiArea');
-const confettiCanvas = document.getElementById('confettiCanvas');
 
 pauseBtn.onclick = ()=> togglePause();
-stopBtn.onclick = ()=> stopRoutine();
+skipBtn.onclick = ()=> skipStep();
+stopBtn.onclick = ()=> stopEverything();
 
-function startRoutineById(id){
-  const routines = JSON.parse(localStorage.getItem('routines') || '[]');
-  const r = routines.find(x=>x.id===id);
-  if(!r || !r.steps || r.steps.length===0) return alert('Routine has no steps');
-  // prepare steps (ensure times in seconds)
-  const steps = r.steps.map(s=>({...s, secs: Math.max(1, Math.round((Number(s.time)||0)*60))}));
-  timerState && stopRoutine(); // stop existing
-  timerState = { routineId: id, steps, idx: 0, remainingSeconds: steps[0].secs, paused:false, timerInterval:null };
-  showTimerUI();
-  runTick();
+function startRoutineById(rid){
+  const routines = getRoutines();
+  const r = routines.find(x=>x.id===rid);
+  if(!r || !r.steps || r.steps.length === 0) return alert('This routine has no steps');
+  // convert step minutes -> seconds (ensure at least 5 sec if 0)
+  const steps = r.steps.map(s => ({ ...s, secs: Math.max(5, Math.round((Number(s.time)||0) * 60)) }));
+  playQueue = []; // clear any existing Play All queue - single routine plays now
+  startQueue([{ routineId: rid, steps }]);
 }
 
-/* Run tick */
-function runTick(){
+/* Play-All: receives array of routine IDs or array of objects */ 
+function playAllForToday(ids){
+  if(!ids || ids.length === 0) return;
+  const routines = getRoutines();
+  // build queue of {routineId, steps}
+  const q = ids.map(id => {
+    const r = routines.find(x=>x.id===id);
+    if(!r) return null;
+    return { routineId: id, steps: r.steps.map(s => ({...s, secs: Math.max(5, Math.round((Number(s.time)||0)*60)) })) };
+  }).filter(Boolean);
+  startQueue(q);
+}
+
+function startQueue(q){
+  if(!q || q.length === 0) return;
+  playQueue = q.slice();
+  // if already running, let it continue; else start processing
+  if(timerState) return;
+  processNextRoutineInQueue();
+}
+
+function processNextRoutineInQueue(){
+  if(playQueue.length === 0){
+    // finished all routines
+    return;
+  }
+  const next = playQueue.shift(); // {routineId, steps}
+  // start first step for this routine
+  timerState = { routineId: next.routineId, steps: next.steps, idx: 0, remaining: next.steps[0].secs, paused:false, interval:null };
+  showTimer();
+  tickLoop();
+}
+
+function tickLoop(){
   if(!timerState) return;
   updateTimerDisplay();
-  timerState.timerInterval = setInterval(()=>{
+  timerState.interval = setInterval(() => {
     if(timerState.paused) return;
-    timerState.remainingSeconds -= 1;
-    if(timerState.remainingSeconds <= 0){
-      // ding
+    timerState.remaining -= 1;
+    if(timerState.remaining <= 0){
+      // play ding for step complete
       playDing();
-      // move to next
+      // move to next step
       timerState.idx += 1;
       if(timerState.idx >= timerState.steps.length){
-        // finished
-        clearInterval(timerState.timerInterval);
-        timerState.timerInterval = null;
+        clearInterval(timerState.interval);
+        timerState.interval = null;
+        // routine finished — confetti pop + sound
+        playPop();
         showConfetti();
-        setTimeout(()=> {
-          // stop after a bit
-          stopRoutine(true);
-        }, 3000);
+        // small delay then either continue with next routine or stop UI
+        setTimeout(() => {
+          hideConfetti();
+          // clear current timer state and move to next routine
+          timerState = null;
+          if(playQueue.length > 0) {
+            // start next routine
+            processNextRoutineInQueue();
+          } else {
+            // finished all
+            hideTimer();
+          }
+        }, 1800);
         return;
       } else {
-        timerState.remainingSeconds = timerState.steps[timerState.idx].secs;
+        // start next step
+        timerState.remaining = timerState.steps[timerState.idx].secs;
         updateTimerDisplay();
       }
     } else {
@@ -240,59 +395,68 @@ function runTick(){
   }, 1000);
 }
 
-/* Update timer UI */
-function updateTimerDisplay(){
-  if(!timerState) return;
-  const step = timerState.steps[timerState.idx];
-  timerStepEl.innerText = `Step ${timerState.idx+1}: ${step.name || 'Unnamed'}`;
-  const mm = Math.floor(timerState.remainingSeconds / 60);
-  const ss = timerState.remainingSeconds % 60;
-  timerRemainingEl.innerText = `${pad(mm)}:${pad(ss)}`;
-  timerSubEl.innerText = `${timerState.idx+1}/${timerState.steps.length} • ${step.time || 0} min`;
-}
-
-/* Toggle pause */
 function togglePause(){
   if(!timerState) return;
   timerState.paused = !timerState.paused;
   pauseBtn.innerText = timerState.paused ? 'Resume' : 'Pause';
 }
 
-/* Stop routine (force stop); finished=true when natural finish */
-function stopRoutine(finished = false){
+function skipStep(){
   if(!timerState) return;
-  clearInterval(timerState.timerInterval);
-  timerState.timerInterval = null;
-  if(!finished){
-    // user stopped early
-    hideTimerUI();
+  clearInterval(timerState.interval);
+  timerState.interval = null;
+  // play ding immediate for skip
+  playDing();
+  timerState.idx += 1;
+  if(timerState.idx >= timerState.steps.length){
+    // finished this routine
+    playPop(); showConfetti();
+    setTimeout(()=>{
+      hideConfetti();
+      timerState = null;
+      if(playQueue.length > 0) processNextRoutineInQueue(); else hideTimer();
+    }, 1400);
   } else {
-    // natural finish: show message then hide after confetti
-    hideTimerUI();
+    timerState.remaining = timerState.steps[timerState.idx].secs;
+    tickLoop();
   }
+}
+
+function stopEverything(){
+  if(!timerState) return;
+  clearInterval(timerState.interval);
   timerState = null;
+  playQueue = [];
+  hideTimer();
   hideConfetti();
 }
 
-/* Show/hide timer UI */
-function showTimerUI(){
-  timerWidget.style.display = 'block';
+function showTimer(){
+  timerArea.style.display = 'block';
   pauseBtn.innerText = 'Pause';
-  confettiArea.style.display = 'none';
-  confettiCanvas.width = confettiArea.clientWidth;
-  confettiCanvas.height = confettiArea.clientHeight;
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('confettiArea').style.display = 'none';
+  // resize canvas to area
+  const canvas = document.getElementById('confettiCanvas');
+  canvas.width = document.getElementById('confettiArea').clientWidth;
+  canvas.height = document.getElementById('confettiArea').clientHeight;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function hideTimerUI(){ timerWidget.style.display = 'none'; }
+function hideTimer(){ timerArea.style.display = 'none'; }
+function updateTimerDisplay(){
+  if(!timerState) return;
+  const s = timerState.steps[timerState.idx];
+  timerStepName.innerText = `Step ${timerState.idx+1}: ${s.name || 'Step'}`;
+  const mm = Math.floor(timerState.remaining / 60);
+  const ss = timerState.remaining % 60;
+  timerRemaining.innerText = `${pad(mm)}:${pad(ss)}`;
+}
 
-/* Ding sound using WebAudio */
+/* ---------- Sounds (WebAudio) ---------- */
 function playDing(){
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.type = 'sine';
-    o.frequency.value = 880;
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = 880;
     g.gain.value = 0.0001;
     o.connect(g); g.connect(ctx.destination);
     const now = ctx.currentTime;
@@ -301,33 +465,48 @@ function playDing(){
     o.start(now);
     g.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
     o.stop(now + 0.3);
-  } catch(e){ /* ignore if audio blocked */ }
+  } catch(e){}
 }
 
-/* Confetti (simple particles inside widget) */
+function playPop(){
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o1 = ctx.createOscillator(), g1 = ctx.createGain();
+    o1.type = 'triangle'; o1.frequency.value = 700;
+    o1.connect(g1); g1.connect(ctx.destination);
+    g1.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g1.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.01);
+    o1.start();
+    g1.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
+    o1.stop(ctx.currentTime + 0.2);
+  } catch(e){}
+}
+
+/* ---------- Confetti (inside widget) ---------- */
+let confettiAnim = null;
 function showConfetti(){
-  confettiArea.style.display = 'block';
-  const canvas = confettiCanvas;
+  const canvas = document.getElementById('confettiCanvas');
+  const area = document.getElementById('confettiArea');
+  area.style.display = 'block';
   const ctx = canvas.getContext('2d');
-  canvas.width = confettiArea.clientWidth;
-  canvas.height = confettiArea.clientHeight;
-  const W = canvas.width, H = canvas.height;
+  const W = canvas.width = area.clientWidth;
+  const H = canvas.height = area.clientHeight;
   let pieces = [];
-  const colors = ['#FF6B6B','#6C4AB6','#FFD166','#4ADE80','#60A5FA'];
+  const colors = ['#FFBFD8','#FFD6A5','#CAFFBF','#9BF6FF','#BDB2FF','#FF8FAB'];
 
   for(let i=0;i<60;i++){
     pieces.push({
       x: Math.random()*W,
-      y: Math.random()*H - H,
-      size: 6 + Math.random()*8,
-      speed: 1 + Math.random()*3,
+      y: Math.random()*-H,
+      w: 6+Math.random()*10,
+      h: 6+Math.random()*10,
+      speed: 1+Math.random()*4,
       angle: Math.random()*360,
       color: colors[Math.floor(Math.random()*colors.length)],
       rot: Math.random()*360,
       rotSpeed: (Math.random()-0.5)*10
     });
   }
-
   let t = 0;
   function frame(){
     t++;
@@ -340,28 +519,37 @@ function showConfetti(){
       ctx.translate(p.x,p.y);
       ctx.rotate(p.rot*Math.PI/180);
       ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
       ctx.restore();
     }
-    pieces = pieces.filter(p=>p.y < H + 50);
-    if(pieces.length>0) requestAnimationFrame(frame);
+    pieces = pieces.filter(p => p.y < H + 60);
+    if(pieces.length > 0) confettiAnim = requestAnimationFrame(frame);
+    else { cancelAnimationFrame(confettiAnim); confettiAnim = null; }
   }
-  requestAnimationFrame(frame);
+  frame();
+}
+function hideConfetti(){ const area = document.getElementById('confettiArea'); area.style.display = 'none'; const canvas = document.getElementById('confettiCanvas'); const ctx = canvas.getContext('2d'); ctx && ctx.clearRect(0,0,canvas.width,canvas.height); if(confettiAnim) cancelAnimationFrame(confettiAnim); confettiAnim = null; }
+
+/* ---------- Cross-tab & live update helper ---------- */
+function triggerCrossTab(){
+  // localStorage event only fires in other tabs, so write a small timestamp to trigger storage event
+  localStorage.setItem('flowtime_sync', Date.now());
 }
 
-/* Hide confetti */
-function hideConfetti(){ confettiArea.style.display='none'; const c=confettiCanvas.getContext('2d'); c && c.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }
+/* Listen to storage event to update UI across tabs */
+window.addEventListener('storage', (e) => {
+  if(e.key === 'flowtime_sync') {
+    renderPinned(); renderToday();
+  }
+});
 
-/* ----------------- Init render ----------------- */
-function initIndex(){
-  renderPinned();
-  renderTodayAssigned();
-  renderTodayListWidget();
+/* ---------- Initialization ---------- */
+function init(){
+  renderPinned(); renderToday();
 }
-// Also watch storage changes from other tabs and update UI
-window.addEventListener('storage', ()=> initIndex());
+init();
 
-initIndex();
+/* Also refresh UI when saving/updating routines from other pages (they should call triggerCrossTab) */
 </script>
 </body>
 </html>
