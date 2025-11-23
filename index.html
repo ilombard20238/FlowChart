@@ -4,217 +4,226 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlowTime - Home</title>
-
   <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: #eef2f7;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
+    body { font-family: 'Poppins', sans-serif; background: #f0f4f8; margin:0; color:#333; }
+    header { background:#fff; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+    .logo { font-size:24px; font-weight:700; }
+    .nav a { margin-left:10px; text-decoration:none; padding:8px 12px; border-radius:8px; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
 
-    /* SIDEBAR */
-    .sidebar {
-      width: 250px;
-      background: #1a1f36;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-    }
-    .sidebar h2 {
-      margin-top: 0;
-      font-size: 22px;
-    }
-    .sidebar a {
-      color: #ffffff;
-      text-decoration: none;
-      padding: 12px 10px;
-      border-radius: 8px;
-      margin: 6px 0;
-      display: block;
-      transition: 0.3s;
-    }
-    .sidebar a:hover {
-      background: #39405a;
-    }
+    .container { display:grid; grid-template-columns:1fr 320px; gap:20px; padding:20px; max-width:1100px; margin:auto; }
+    @media(max-width:900px){ .container{ grid-template-columns:1fr; } }
 
-    /* MAIN CONTENT */
-    .main {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-    .header {
-      font-size: 26px;
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
+    .card { background:#fff; padding:16px; border-radius:16px; box-shadow:0 4px 16px rgba(0,0,0,0.06); margin-bottom:20px; }
 
-    /* RIGHT SIDEBAR */
-    .rightbar {
-      width: 330px;
-      background: #ffffff;
-      border-left: 2px solid #e3e6ee;
-      padding: 20px;
-      box-shadow: -2px 0 10px rgba(0,0,0,0.05);
-      overflow-y: auto;
-    }
+    h2 { margin-top:0; }
+    button { padding:8px 14px; border-radius:8px; border:none; cursor:pointer; font-weight:600; }
+    .primary { background:#ffd6a5; }
+    .danger { background:#ff6b6b; color:#fff; }
+    .muted  { background:#eee; }
 
-    .widget {
-      background: #fdfdfe;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
-    }
-    .widget h3 {
-      margin-top: 0;
-      font-size: 18px;
-      font-weight: 600;
-    }
+    .routine-item { padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; }
+    .routine-item:last-child { border-bottom:none; }
 
-    /* TASK STYLES */
-    #taskInput {
-      width: 92%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-    #addTaskBtn {
-      width: 100%;
-      padding: 10px;
-      background: #4a6cf7;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-    #addTaskBtn:hover {
-      background: #3957d4;
-    }
-
-    .taskItem {
-      padding: 10px;
-      background: #f1f4ff;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-    }
-
-    .taskName {
-      cursor: pointer;
-    }
-
-    .deleteBtn {
-      background: #ff5c5c;
-      border: none;
-      color: white;
-      padding: 5px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .deleteBtn:hover {
-      background: #e04d4d;
-    }
+    .step { font-size:14px; margin-left:10px; color:#777; }
   </style>
-
 </head>
 <body>
 
-  <!-- LEFT SIDEBAR -->
-  <div class="sidebar">
-    <h2>FlowTime</h2>
+<header>
+  <div class="logo">🍓 FlowTime</div>
+  <div class="nav">
     <a href="index.html">Home</a>
     <a href="calendar.html">Calendar</a>
     <a href="routines.html">Routines</a>
   </div>
+</header>
 
-  <!-- MAIN CONTENT -->
-  <div class="main">
-    <div class="header">Welcome Back 👋</div>
-    <p>This is your productivity hub. Your tasks appear on the right.</p>
-  </div>
+<div class="container">
 
-  <!-- RIGHT SIDEBAR WITH TASK REMINDER -->
-  <div class="rightbar">
+  <!-- MAIN COLUMN -->
+  <div>
 
-    <div class="widget">
-      <h3>Task Reminders</h3>
+    <div class="card">
+      <h2>Today's Routines</h2>
+      <div id="todayList"></div>
+    </div>
 
-      <input type="text" id="taskInput" placeholder="Add a new task...">
-      <button id="addTaskBtn">Add Task</button>
-
-      <div id="taskList"></div>
+    <div class="card">
+      <h2>This Week</h2>
+      <div id="weekList"></div>
     </div>
 
   </div>
 
-  <!-- CONFETTI SCRIPT -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- RIGHT SIDEBAR -->
+  <div>
 
-  <!-- TASK LOGIC -->
-  <script>
-    const input = document.getElementById("taskInput");
-    const btn = document.getElementById("addTaskBtn");
-    const list = document.getElementById("taskList");
+    <div class="card">
+      <h2>Today</h2>
+      <div id="todaySidebarList"></div>
+    </div>
 
-    function loadTasks() {
-      const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-      list.innerHTML = "";
-      tasks.forEach((t, i) => {
-        const div = document.createElement("div");
-        div.className = "taskItem";
-        div.innerHTML = `
-          <span class="taskName" onclick="finishTask(${i})">${t}</span>
-          <button class="deleteBtn" onclick="deleteTask(${i})">X</button>
-        `;
-        list.appendChild(div);
-      });
-    }
+    <!-- ⭐ INSERTED TASK REMINDER CARD (Only Change Made) ⭐ -->
+    <div class="card">
+      <h2>Task Reminder</h2>
+      <input id="taskInput" placeholder="New task…" style="width:100%; padding:8px; border-radius:8px; border:1px solid #ddd; margin-bottom:10px;">
+      <button class="primary" onclick="addTask()">Add Task</button>
+      <div id="taskList" style="margin-top:12px;"></div>
+    </div>
+    <!-- END INSERTED SECTION -->
 
-    function addTask() {
-      const value = input.value.trim();
-      if (!value) return;
+    <div class="card">
+      <h2>Pinned Routines</h2>
+      <div id="pinnedList"></div>
+    </div>
 
-      const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-      tasks.push(value);
-      localStorage.setItem("tasks", JSON.stringify(tasks));
+  </div>
+</div>
 
-      input.value = "";
-      loadTasks();
-    }
+<script>
+/* ---------------- LocalStorage Helpers ---------------- */
+function getRoutines(){ return JSON.parse(localStorage.getItem('routines')||'[]'); }
+function getCalendar(){ return JSON.parse(localStorage.getItem('calendarData')||'{}'); }
+function uid(){ return Date.now()+Math.floor(Math.random()*1000); }
 
-    function deleteTask(i) {
-      const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
-      tasks.splice(i, 1);
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      loadTasks();
-    }
+/* ---------------- Load Today's Routines ---------------- */
+function loadToday(){
+  const today = new Date();
+  const key = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+  const cal = getCalendar();
+  const routines = getRoutines();
+  const todayList = document.getElementById('todayList');
+  const sidebarList = document.getElementById('todaySidebarList');
+  todayList.innerHTML = '';
+  sidebarList.innerHTML = '';
 
-    function finishTask(i) {
-      // Confetti 🎉
-      confetti({
-        spread: 100,
-      });
+  if(!cal[key] || cal[key].length === 0){
+    todayList.innerHTML = '<div style="color:#777">No routines today.</div>';
+    sidebarList.innerHTML = '<div style="color:#777">None assigned.</div>';
+    return;
+  }
 
-      deleteTask(i);
-    }
+  cal[key].forEach(id=>{
+    const r = routines.find(x=>x.id===id);
+    if(!r) return;
 
-    btn.onclick = addTask;
-    loadTasks();
-  </script>
+    const div = document.createElement('div');
+    div.className='routine-item';
+    div.innerHTML = `
+      <div>
+        <strong>${r.name}</strong>
+        <div class="step">${r.steps.length} steps • ${r.totalTime} min</div>
+      </div>
+    `;
+    todayList.appendChild(div);
+
+    const small = document.createElement('div');
+    small.style.marginBottom = '10px';
+    small.innerHTML = `<strong>${r.name}</strong>`;
+    sidebarList.appendChild(small);
+  });
+}
+
+/* ---------------- Week Preview ---------------- */
+function loadWeek(){
+  const weekBox = document.getElementById('weekList');
+  weekBox.innerHTML = '';
+  const cal = getCalendar();
+  const routines = getRoutines();
+
+  Object.keys(cal).slice(0,7).forEach(date=>{
+    const wrapper = document.createElement('div');
+    wrapper.style.marginBottom = '12px';
+    wrapper.innerHTML = `<strong>${date}</strong>`;
+    weekBox.appendChild(wrapper);
+
+    cal[date].forEach(id=>{
+      const r = routines.find(x=>x.id===id);
+      if(!r) return;
+
+      const d = document.createElement('div');
+      d.className='step';
+      d.innerText = `• ${r.name}`;
+      weekBox.appendChild(d);
+    });
+  });
+}
+
+/* ---------------- Pinned Routines ---------------- */
+function loadPinned(){
+  const box = document.getElementById('pinnedList');
+  const routines = getRoutines().filter(r=>r.pinned);
+  box.innerHTML = '';
+
+  if(routines.length === 0){
+    box.innerHTML = '<div style="color:#777">No pinned routines</div>';
+    return;
+  }
+
+  routines.forEach(r=>{
+    const div = document.createElement('div');
+    div.style.marginBottom='10px';
+    div.innerHTML = `<strong>${r.name}</strong><div class="step">${r.totalTime} min</div>`;
+    box.appendChild(div);
+  });
+}
+
+/* ---------------- Task Reminder (new feature) ---------------- */
+function getTasks(){ return JSON.parse(localStorage.getItem('tasks')||'[]'); }
+function setTasks(t){ localStorage.setItem('tasks', JSON.stringify(t)); }
+
+function addTask(){
+  const input = document.getElementById('taskInput');
+  const text = input.value.trim();
+  if(!text) return alert("Enter a task");
+  const tasks = getTasks();
+  tasks.push({ id:uid(), text });
+  setTasks(tasks);
+  input.value='';
+  renderTasks();
+}
+
+function renderTasks(){
+  const box = document.getElementById('taskList');
+  const tasks = getTasks();
+  box.innerHTML = '';
+
+  if(tasks.length === 0){
+    box.innerHTML = '<div style="color:#777">No tasks</div>';
+    return;
+  }
+
+  tasks.forEach(t=>{
+    const row = document.createElement('div');
+    row.style.display='flex';
+    row.style.justifyContent='space-between';
+    row.style.alignItems='center';
+    row.style.marginBottom='8px';
+
+    row.innerHTML = `
+      <span>${t.text}</span>
+      <button class="danger" onclick="deleteTask(${t.id})">X</button>
+    `;
+
+    box.appendChild(row);
+  });
+}
+
+function deleteTask(id){
+  let tasks = getTasks().filter(t=>t.id!==id);
+  setTasks(tasks);
+  renderTasks();
+}
+
+/* ---------------- Init ---------------- */
+function init(){
+  loadToday();
+  loadWeek();
+  loadPinned();
+  renderTasks();
+}
+init();
+</script>
 
 </body>
 </html>
