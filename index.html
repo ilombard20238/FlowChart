@@ -1,425 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>FlowTime — Home</title>
-<style>
-  /* ---------- Palette 2: Strawberry Milk ---------- */
-  :root{
-    --bg: #fff7f9;
-    --card: #ffffff;
-    --accent-1: #FFBFD8; /* strawberry milk pink */
-    --accent-2: #FFD6A5; /* peach */
-    --accent-3: #CAFFBF; /* mint */
-    --accent-4: #9BF6FF; /* aqua */
-    --accent-5: #BDB2FF; /* lavender */
-    --muted: #7b6b7a;
-    --joy: #ff8fab;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlowTime - Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #eef2f7;
+      display: flex;
+      height: 100vh;
+    }
 
-  *{box-sizing:border-box}
-  body{
-    margin:0; font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background: linear-gradient(180deg, #fff9fb 0%, #fff7f9 100%);
-    color:#332;
-  }
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: #1a1f36;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+    .sidebar a {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 12px 10px;
+      border-radius: 8px;
+      margin: 6px 0;
+      display: block;
+      transition: 0.3s;
+    }
+    .sidebar a:hover {
+      background: #39405a;
+    }
 
-  header{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:18px 22px; background:transparent;
-  }
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      background: #f7f9fc;
+    }
+    .header {
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
 
-  .logo {
-    display:flex; gap:12px; align-items:center;
-  }
-  .brand {
-    display:flex; flex-direction:column; line-height:1;
-  }
-  .brand .title { font-size:20px; font-weight:700; color:var(--accent-5); letter-spacing:0.5px; }
-  .brand .sub { font-size:12px; color:var(--muted); }
+    /* Right Sidebar */
+    .rightbar {
+      width: 300px;
+      background: #ffffff;
+      border-left: 2px solid #e3e6ee;
+      padding: 20px;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+      overflow-y: auto;
+    }
+    .widget {
+      background: #fdfdfe;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+    .widget h3 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
 
-  .nav {
-    display:flex; gap:10px; align-items:center;
-  }
+    /* Task Reminder Styles */
+    #taskInput {
+      width: 90%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    #addTaskBtn {
+      width: 100%;
+      padding: 10px;
+      background: #4a6cf7;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    #addTaskBtn:hover {
+      background: #3957d4;
+    }
+    .taskItem {
+      padding: 8px;
+      background: #f1f4ff;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+    .deleteBtn {
+      background: #ff5c5c;
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .deleteBtn:hover {
+      background: #e04d4d;
+    }
 
-  a.btn {
-    text-decoration:none; padding:10px 12px; border-radius:14px; font-weight:600;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.06);
-    transition: transform .18s ease, box-shadow .18s ease;
-  }
-  a.btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-  .btn-primary { background: linear-gradient(90deg,var(--accent-5),var(--accent-1)); color:#fff; }
-  .btn-ghost { background: transparent; border: none; color:var(--muted); font-weight:600; }
-
-  /* layout */
-  .wrap { max-width:1140px; margin:18px auto; padding:0 18px; display:grid; grid-template-columns:1fr 400px; gap:20px; align-items:start; }
-  @media(max-width:1000px){ .wrap { grid-template-columns:1fr } }
-
-  .card {
-    background:var(--card); border-radius:22px; padding:18px; box-shadow: 0 10px 30px rgba(172,152,180,0.08);
-    transition: transform .18s ease;
-  }
-
-  .welcome {
-    display:flex; gap:18px; align-items:center;
-  }
-  .blob {
-    width:86px; height:86px; border-radius:20px; display:flex; align-items:center; justify-content:center;
-    background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); color:white; font-size:32px; box-shadow:0 8px 20px rgba(255,160,190,0.28);
-  }
-
-  h2 { margin:0; color:#3a2b3a; }
-  p.lead { margin:8px 0 0 0; color:var(--muted); font-size:14px; }
-
-  /* pinned grid */
-  .pinned-grid { margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  @media(max-width:720px){ .pinned-grid{ grid-template-columns:1fr } }
-
-  .pinned-card {
-    padding:12px; border-radius:14px; background: linear-gradient(180deg,#fff,#fff4f7);
-    display:flex; flex-direction:column; gap:8px; box-shadow:0 10px 18px rgba(255,160,190,0.06);
-    transform-origin:center; transition: transform .18s cubic-bezier(.22,.9,.36,1);
-  }
-  .pinned-card:hover{ transform: translateY(-6px) rotate(-1deg); }
-
-  .routine-title { font-weight:700; color:#5a2b4a; display:flex; justify-content:space-between; align-items:center; gap:10px; }
-  .meta { font-size:13px; color:var(--muted); }
-
-  .card-actions { display:flex; gap:8px; margin-top:6px; }
-  .tiny { padding:8px 10px; border-radius:10px; border:none; cursor:pointer; font-weight:700; box-shadow: 0 6px 14px rgba(0,0,0,0.05); }
-  .play { background: linear-gradient(90deg,var(--accent-3),var(--accent-4)); color:#093; }
-  .edit { background: linear-gradient(90deg,var(--accent-5),var(--accent-1)); color:#fff; }
-  .assign { background: #fff; color:var(--accent-5); border:1px dashed rgba(180,120,170,0.25); }
-  .del { background:#fff; color:#ff6b6b; border:1px solid rgba(255,107,107,0.12); }
-
-  /* TODAY area */
-  .today-list { margin-top:12px; display:flex; flex-direction:column; gap:10px; }
-  .today-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-radius:12px; background: linear-gradient(180deg,#fff,#fffbfb); box-shadow: 0 4px 10px rgba(170,140,170,0.04); }
-  .play-all { margin-top:10px; padding:10px; border-radius:13px; background:linear-gradient(90deg,var(--accent-2),var(--accent-3)); color:#333; font-weight:800; cursor:pointer; }
-
-  /* mini calendar widget */
-  .widget { text-align:center; position:sticky; top:18px; }
-  .date-large { font-weight:800; color:#4b2a4b; font-size:18px; }
-  .live-clock { font-weight:700; color:#633a63; font-size:20px; margin-top:6px; }
-  .widget .todayList { margin-top:12px; display:flex; flex-direction:column; gap:8px; align-items:stretch; }
-
-  /* timer UI */
-  .timer {
-    margin-top:12px; padding:12px; border-radius:12px; background: linear-gradient(180deg, #fff,#fffaf6); box-shadow:0 8px 24px rgba(210,160,200,0.06);
-  }
-  .step-name { font-weight:800; color:#6b376b; }
-  .time-remaining { font-size:28px; color:#4f2a4f; margin-top:6px; }
-  .controls { display:flex; gap:8px; justify-content:center; margin-top:10px; }
-
-  /* confetti canvas */
-  .confetti-canvas { position:relative; height:150px; margin-top:10px; overflow:hidden; border-radius:12px; }
-
-  /* playful micro-animations */
-  .sparkle { display:inline-block; transform-origin:center; animation: floaty 3s ease-in-out infinite; opacity:0.9; }
-  @keyframes floaty { 0%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } 100%{ transform: translateY(0) } }
-</style>
+  </style>
 </head>
 <body>
-<header>
-  <div class="logo">
-    <div class="blob">🍓</div>
-    <div class="brand">
-      <div class="title">FlowTime</div>
-      <div class="sub">cute routines, big wins</div>
-    </div>
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+    <h2>FlowTime</h2>
+    <a href="index.html">Home</a>
+    <a href="calendar.html">Calendar</a>
+    <a href="routines.html">Routines</a>
   </div>
 
-  <div class="nav">
-    <a class="btn btn-ghost" href="calendar.html">Calendar</a>
-    <a class="btn btn-primary" href="routines.html">Manage Routines</a>
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="header">Welcome Back 👋</div>
+    <p>This is your productivity hub. Use the widgets on the right to track tasks and upcoming events.</p>
   </div>
-</header>
 
-<main class="wrap">
-  <!-- left -->
-  <section class="card">
-    <div class="welcome">
-      <div>
-        <h2>Hi — let's make today delightful ✨</h2>
-        <p class="lead">Quick start your pinned routines or run everything for today with a single tap.</p>
-      </div>
+  <!-- RIGHT SIDEBAR -->
+  <div class="rightbar">
+
+    <!-- 🆕 TASK REMINDERS WIDGET -->
+    <div class="widget">
+      <h3>Task Reminders</h3>
+
+      <input type="text" id="taskInput" placeholder="Add a new task...">
+      <button id="addTaskBtn">Add Task</button>
+
+      <div id="taskList"></div>
     </div>
 
-    <div style="margin-top:14px">
-      <h3 style="margin:0 0 8px 0">Pinned Routines</h3>
-      <div class="pinned-grid" id="pinnedGrid"></div>
-    </div>
+  </div>
 
-    <div style="margin-top:14px">
-      <h3 style="margin:0 0 8px 0">Today's Routines</h3>
-      <div id="todayArea" class="today-list"></div>
-      <button id="playAllBtn" class="play-all" style="display:none">▶ Play All Routines Today</button>
-    </div>
-  </section>
+  <!-- SCRIPT -->
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskList = document.getElementById('taskList');
 
-  <!-- widget -->
-  <aside class="card widget">
-    <div class="date-large" id="dateLabel"></div>
-    <div class="live-clock" id="liveClock">--:--</div>
+    function renderTasks() {
+      const tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
+      taskList.innerHTML = "";
+      tasks.forEach((task, i) => {
+        const div = document.createElement("div");
+        div.className = "taskItem";
+        div.innerHTML = `
+          <span>${task}</span>
+          <button class="deleteBtn" onclick="deleteTask(${i})">X</button>
+        `;
+        taskList.appendChild(div);
+      });
+    }
 
-    <div style="margin-top:12px">
-      <strong>Today</strong>
-      <div class="todayList" id="widgetTodayList"></div>
-    </div>
+    function addTask() {
+      const value = taskInput.value.trim();
+      if (!value) return;
+      const tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
+      tasks.push(value);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      taskInput.value = "";
+      renderTasks();
+    }
 
-    <div id="timerArea" class="timer" style="display:none">
-      <div class="step-name" id="timerStepName"></div>
-      <div class="time-remaining" id="timerRemaining">00:00</div>
-      <div class="controls">
-        <button class="tiny" id="pauseBtn">Pause</button>
-        <button class="tiny" id="skipBtn">Skip</button>
-        <button class="tiny" id="stopBtn">Stop</button>
-      </div>
-      <div class="confetti-canvas" id="confettiArea" style="display:none">
-        <canvas id="confettiCanvas" class="confetti"></canvas>
-      </div>
-    </div>
-  </aside>
-</main>
+    function deleteTask(index) {
+      const tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
+      tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
 
-<script>
-/* =========================
-   Data model in localStorage:
-   - routines: [{id,name,steps:[{id,name,time}], totalTime, pinned}]
-   - calendarData: {"YYYY-M-D": [routineId, ...]}
-   ========================= */
+    addTaskBtn.addEventListener("click", addTask);
+    renderTasks();
+  </script>
 
-const pad = n => n < 10 ? '0'+n : ''+n;
-function isoTodayKey(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
-function uid(){ return Date.now() + Math.floor(Math.random()*1000); }
-function escapeHtml(s){ return (s||'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-/* ---------- Live clock ---------- */
-function updateClock(){
-  const now = new Date();
-  document.getElementById('liveClock').innerText = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  document.getElementById('dateLabel').innerText = now.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric' });
-}
-setInterval(updateClock, 1000); updateClock();
-
-/* ---------- Render functions ---------- */
-function getRoutines(){ return JSON.parse(localStorage.getItem('routines') || '[]'); }
-function getCalendar(){ return JSON.parse(localStorage.getItem('calendarData') || '{}'); }
-
-function renderPinned(){
-  const grid = document.getElementById('pinnedGrid');
-  grid.innerHTML = '';
-  const routines = getRoutines().filter(r=>r.pinned);
-  if(routines.length === 0){ grid.innerHTML = '<div style="color:#777">No pinned routines yet — pin some!</div>'; return; }
-  routines.forEach(r => {
-    const card = document.createElement('div'); card.className='pinned-card';
-    card.innerHTML = `<div style="display:flex;flex-direction:column">
-      <div class="routine-title"><span>${escapeHtml(r.name)}</span><small class="meta">${r.totalTime} min</small></div>
-      <div class="meta">${r.steps.length} steps</div>
-    </div>`;
-    const actions = document.createElement('div'); actions.className='card-actions';
-    const play = document.createElement('button'); play.className='tiny play'; play.textContent='▶ Play'; play.onclick = ()=> startRoutineById(r.id);
-    const edit = document.createElement('a'); edit.className='tiny edit'; edit.href = `routines.html?edit=${r.id}`; edit.textContent='✎ Edit';
-    const assign = document.createElement('a'); assign.className='tiny assign'; assign.href = `calendar.html?select=${isoTodayKey()}&openAssign=${r.id}`; assign.textContent='📅 Assign';
-    const del = document.createElement('button'); del.className='tiny del'; del.textContent='🗑'; del.onclick = ()=> { if(confirm('Delete pinned routine? This removes it entirely.')) deleteRoutineById(r.id); };
-    actions.appendChild(play); actions.appendChild(edit); actions.appendChild(assign); actions.appendChild(del);
-    card.appendChild(actions);
-    grid.appendChild(card);
-  });
-}
-
-/* ---------- Today's routines render + play all ---------- */
-function renderToday(){
-  const box = document.getElementById('todayArea');
-  const widgetList = document.getElementById('widgetTodayList');
-  box.innerHTML = ''; widgetList.innerHTML = '';
-  const key = isoTodayKey();
-  const cd = getCalendar();
-  const ids = cd[key] || [];
-  const routines = getRoutines();
-
-  if(ids.length === 0){
-    box.innerHTML = '<div style="color:#777">No routines scheduled for today</div>';
-    widgetList.innerHTML = '<div style="color:#777">No routines</div>';
-    document.getElementById('playAllBtn').style.display = 'none';
-    return;
-  }
-
-  document.getElementById('playAllBtn').style.display = 'block';
-  document.getElementById('playAllBtn').onclick = () => playAllForToday(ids.slice());
-
-  ids.forEach(id => {
-    const r = routines.find(x=>x.id === id);
-    if(!r) return;
-    // main list row
-    const row = document.createElement('div'); row.className='today-row';
-    const left = document.createElement('div'); left.innerHTML = `<div style="font-weight:800;color:#5a2b4a">${escapeHtml(r.name)}</div><div class="meta">${r.steps.length} steps • ${r.totalTime} min</div>`;
-    const right = document.createElement('div');
-    const play = document.createElement('button'); play.className='tiny play'; play.textContent='▶ Play'; play.onclick = ()=> startRoutineById(r.id);
-    const edit = document.createElement('a'); edit.className='tiny edit'; edit.href = `routines.html?edit=${r.id}`; edit.textContent='✎';
-    const assign = document.createElement('a'); assign.className='tiny assign'; assign.href = `calendar.html?select=${key}&openAssign=${r.id}`; assign.textContent='📅';
-    const remove = document.createElement('button'); remove.className='tiny del'; remove.textContent='Remove'; remove.onclick = ()=>{
-      if(!confirm('Remove this routine from today?')) return;
-      removeRoutineFromDay(key, r.id);
-    };
-    right.appendChild(play); right.appendChild(edit); right.appendChild(assign); right.appendChild(remove);
-    row.appendChild(left); row.appendChild(right);
-    box.appendChild(row);
-
-    // widget mini list
-    const wrow = document.createElement('div'); wrow.style.display='flex'; wrow.style.justifyContent='space-between'; wrow.style.alignItems='center'; wrow.style.padding='8px'; wrow.style.borderRadius='10px'; wrow.style.background='#fff';
-    wrow.innerHTML = `<div style="font-weight:700">${escapeHtml(r.name)}</div>`;
-    const wp = document.createElement('button'); wp.className='tiny play'; wp.textContent='Start'; wp.onclick = ()=> startRoutineById(r.id);
-    wrow.appendChild(wp);
-    widgetList.appendChild(wrow);
-  });
-}
-
-/* ---------- Data mutations ---------- */
-function removeRoutineFromDay(key, id){
-  const cd = getCalendar();
-  cd[key] = (cd[key]||[]).filter(x=>x!==id);
-  if((cd[key]||[]).length === 0) delete cd[key];
-  localStorage.setItem('calendarData', JSON.stringify(cd));
-  // update UI instantly
-  renderToday(); renderPinned(); triggerCrossTab();
-}
-function deleteRoutineById(id){
-  let arr = getRoutines().filter(r=>r.id !== id);
-  localStorage.setItem('routines', JSON.stringify(arr));
-  // remove from calendar
-  const cd = getCalendar();
-  Object.keys(cd).forEach(k => { cd[k] = cd[k].filter(x=>x!==id); if(cd[k].length === 0) delete cd[k]; });
-  localStorage.setItem('calendarData', JSON.stringify(cd));
-  renderPinned(); renderToday(); triggerCrossTab();
-}
-
-/* ---------- Timer system (step-by-step & play-all) ---------- */
-let playQueue = []; // array of {routineId,...} for Play All
-let timerState = null; // {routineId, steps, idx, remaining, paused, interval}
-
-const timerArea = document.getElementById('timerArea');
-const timerStepName = document.getElementById('timerStepName');
-const timerRemaining = document.getElementById('timerRemaining');
-const pauseBtn = document.getElementById('pauseBtn');
-const skipBtn = document.getElementById('skipBtn');
-const stopBtn = document.getElementById('stopBtn');
-const confettiArea = document.getElementById('confettiArea');
-const confettiCanvas = document.getElementById('confettiCanvas');
-
-pauseBtn.onclick = ()=>{ if(!timerState) return; timerState.paused=!timerState.paused; pauseBtn.textContent = timerState.paused ? 'Resume' : 'Pause'; };
-skipBtn.onclick = ()=>{ if(!timerState) return; nextStep(); };
-stopBtn.onclick = ()=>{ stopTimer(); };
-
-function startRoutineById(rid){
-  const r = getRoutines().find(x=>x.id===rid); if(!r) return;
-  playQueue = []; startRoutine(r);
-}
-function playAllForToday(ids){
-  const routines = getRoutines().filter(r=>ids.includes(r.id));
-  if(routines.length===0) return;
-  playQueue = routines.slice();
-  startNextInQueue();
-}
-
-function startNextInQueue(){
-  if(playQueue.length===0){ stopTimer(); return; }
-  const r = playQueue.shift();
-  startRoutine(r, ()=> startNextInQueue());
-}
-
-function startRoutine(routine, onFinish){
-  stopTimer();
-  timerState = { routineId: routine.id, steps: routine.steps.slice(), idx:0, remaining:0, paused:false, onFinish:onFinish };
-  timerArea.style.display='block';
-  confettiArea.style.display='none';
-  nextStep();
-}
-
-function nextStep(){
-  if(!timerState) return;
-  if(timerState.idx >= timerState.steps.length){
-    playPop(); // routine finished sound
-    confettiArea.style.display='block';
-    timerStepName.textContent='🎉 Completed!';
-    timerRemaining.textContent='00:00';
-    setTimeout(()=>{
-      confettiArea.style.display='none';
-      stopTimer();
-      if(timerState.onFinish) timerState.onFinish();
-    },1200);
-    return;
-  }
-  const step = timerState.steps[timerState.idx];
-  timerState.remaining = step.time*60;
-  timerStepName.textContent = step.name;
-  playDing(); // step sound
-  timerState.idx++;
-  if(timerState.interval) clearInterval(timerState.interval);
-  timerState.interval = setInterval(()=>{
-    if(timerState.paused) return;
-    timerState.remaining--;
-    timerRemaining.textContent = `${Math.floor(timerState.remaining/60)}:${pad(timerState.remaining%60)}`;
-    if(timerState.remaining <=0) nextStep();
-  },1000);
-}
-
-function stopTimer(){
-  if(timerState && timerState.interval) clearInterval(timerState.interval);
-  timerState = null;
-  timerArea.style.display='none';
-  confettiArea.style.display='none';
-}
-
-/* ---------- Sounds (WebAudio) ---------- */
-// Step Completion Sound: Sparkle Cascade
-function playDing(){
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    [600,700,800,900].forEach((freq,i)=>{
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = 'sine'; o.frequency.value = freq;
-      g.gain.value = 0.0001;
-      o.connect(g); g.connect(ctx.destination);
-      const now = ctx.currentTime;
-      g.gain.setValueAtTime(0.0001, now);
-      g.gain.exponentialRampToValueAtTime(0.2, now + 0.01);
-      o.start(now + i*0.12);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.13 + i*0.12);
-      o.stop(now + 0.14 + i*0.12);
-    });
-  } catch(e){}
-}
-
-// Routine Completion Sound: Soft Fan Fare
-function playPop(){
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    [400,500,600,700].forEach((freq,i)=>{
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = 'sine'; o.frequency.value = freq;
-      g.gain.value = 0.0001;
-      o.connect(g); g.connect(ctx.destination);
-      const now = ctx.currentTime;
-      g.gain.setValueAtTime(0.0001, now);
-      g.gain.exponentialRampToValueAtTime(0.2, now + 0.01);
-      o.start(now + i*0.18);
-      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.19 + i*0.18);
-      o.stop(now + 0.2 + i*0.18);
-    });
-  } catch(e){}
-}
-
-/* ---------- Init render ---------- */
-renderPinned(); renderToday();
-
-/* ---------- Cross-tab sync ---------- */
-window.addEventListener('storage',()=>{ renderPinned(); renderToday(); });
-
-function triggerCrossTab(){ window.dispatchEvent(new Event('storage')); }
-</script>
 </body>
 </html>
