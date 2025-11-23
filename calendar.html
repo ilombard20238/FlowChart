@@ -1,555 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>FlowTime — Home</title>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FlowTime — Calendar</title>
 <style>
-  /* ---------- Palette 2: Strawberry Milk ---------- */
   :root{
-    --bg: #fff7f9;
-    --card: #ffffff;
-    --accent-1: #FFBFD8; /* strawberry milk pink */
-    --accent-2: #FFD6A5; /* peach */
-    --accent-3: #CAFFBF; /* mint */
-    --accent-4: #9BF6FF; /* aqua */
-    --accent-5: #BDB2FF; /* lavender */
-    --muted: #7b6b7a;
-    --joy: #ff8fab;
+    --accent-1:#FFBFD8; --accent-2:#FFD6A5; --accent-3:#CAFFBF; --muted:#6b556b;
+    --bg:#fff7f9;
   }
-
   *{box-sizing:border-box}
-  body{
-    margin:0; font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background: linear-gradient(180deg, #fff9fb 0%, #fff7f9 100%);
-    color:#332;
-  }
-
-  header{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:18px 22px; background:transparent;
-  }
-
-  .logo {
-    display:flex; gap:12px; align-items:center;
-  }
-  .brand {
-    display:flex; flex-direction:column; line-height:1;
-  }
-  .brand .title { font-size:20px; font-weight:700; color:var(--accent-5); letter-spacing:0.5px; }
-  .brand .sub { font-size:12px; color:var(--muted); }
-
-  .nav {
-    display:flex; gap:10px; align-items:center;
-  }
-
-  a.btn {
-    text-decoration:none; padding:10px 12px; border-radius:14px; font-weight:600;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.06);
-    transition: transform .18s ease, box-shadow .18s ease;
-  }
-  a.btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-  .btn-primary { background: linear-gradient(90deg,var(--accent-5),var(--accent-1)); color:#fff; }
-  .btn-ghost { background: transparent; border: none; color:var(--muted); font-weight:600; }
-
-  /* layout */
-  .wrap { max-width:1140px; margin:18px auto; padding:0 18px; display:grid; grid-template-columns:1fr 400px; gap:20px; align-items:start; }
-  @media(max-width:1000px){ .wrap { grid-template-columns:1fr } }
-
-  .card {
-    background:var(--card); border-radius:22px; padding:18px; box-shadow: 0 10px 30px rgba(172,152,180,0.08);
-    transition: transform .18s ease;
-  }
-
-  .welcome {
-    display:flex; gap:18px; align-items:center;
-  }
-  .blob {
-    width:86px; height:86px; border-radius:20px; display:flex; align-items:center; justify-content:center;
-    background: linear-gradient(135deg,var(--accent-1),var(--accent-2)); color:white; font-size:32px; box-shadow:0 8px 20px rgba(255,160,190,0.28);
-  }
-
-  h2 { margin:0; color:#3a2b3a; }
-  p.lead { margin:8px 0 0 0; color:var(--muted); font-size:14px; }
-
-  /* pinned grid */
-  .pinned-grid { margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-  @media(max-width:720px){ .pinned-grid{ grid-template-columns:1fr } }
-
-  .pinned-card {
-    padding:12px; border-radius:14px; background: linear-gradient(180deg,#fff,#fff4f7);
-    display:flex; flex-direction:column; gap:8px; box-shadow:0 10px 18px rgba(255,160,190,0.06);
-    transform-origin:center; transition: transform .18s cubic-bezier(.22,.9,.36,1);
-  }
-  .pinned-card:hover{ transform: translateY(-6px) rotate(-1deg); }
-
-  .routine-title { font-weight:700; color:#5a2b4a; display:flex; justify-content:space-between; align-items:center; gap:10px; }
-  .meta { font-size:13px; color:var(--muted); }
-
-  .card-actions { display:flex; gap:8px; margin-top:6px; }
-  .tiny { padding:8px 10px; border-radius:10px; border:none; cursor:pointer; font-weight:700; box-shadow: 0 6px 14px rgba(0,0,0,0.05); }
-  .play { background: linear-gradient(90deg,var(--accent-3),var(--accent-4)); color:#093; }
-  .edit { background: linear-gradient(90deg,var(--accent-5),var(--accent-1)); color:#fff; }
-  .assign { background: #fff; color:var(--accent-5); border:1px dashed rgba(180,120,170,0.25); }
-  .del { background:#fff; color:#ff6b6b; border:1px solid rgba(255,107,107,0.12); }
-
-  /* TODAY area */
-  .today-list { margin-top:12px; display:flex; flex-direction:column; gap:10px; }
-  .today-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; border-radius:12px; background: linear-gradient(180deg,#fff,#fffbfb); box-shadow: 0 4px 10px rgba(170,140,170,0.04); }
-  .play-all { margin-top:10px; padding:10px; border-radius:13px; background:linear-gradient(90deg,var(--accent-2),var(--accent-3)); color:#333; font-weight:800; cursor:pointer; }
-
-  /* mini calendar widget */
-  .widget { text-align:center; position:sticky; top:18px; }
-  .date-large { font-weight:800; color:#4b2a4b; font-size:18px; }
-  .live-clock { font-weight:700; color:#633a63; font-size:20px; margin-top:6px; }
-  .widget .todayList { margin-top:12px; display:flex; flex-direction:column; gap:8px; align-items:stretch; }
-
-  /* timer UI */
-  .timer {
-    margin-top:12px; padding:12px; border-radius:12px; background: linear-gradient(180deg, #fff,#fffaf6); box-shadow:0 8px 24px rgba(210,160,200,0.06);
-  }
-  .step-name { font-weight:800; color:#6b376b; }
-  .time-remaining { font-size:28px; color:#4f2a4f; margin-top:6px; }
-  .controls { display:flex; gap:8px; justify-content:center; margin-top:10px; }
-
-  /* confetti canvas */
-  .confetti-canvas { position:relative; height:150px; margin-top:10px; overflow:hidden; border-radius:12px; }
-
-  /* playful micro-animations */
-  .sparkle { display:inline-block; transform-origin:center; animation: floaty 3s ease-in-out infinite; opacity:0.9; }
-  @keyframes floaty { 0%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } 100%{ transform: translateY(0) } }
+  body{font-family:'Poppins',sans-serif;background:linear-gradient(180deg,#fff9fb,#fff7f9);margin:0;color:#3a2b3a}
+  header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px}
+  .brand {display:flex;gap:12px;align-items:center}
+  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:28px}
+  .nav a{margin-left:8px;text-decoration:none;padding:8px 12px;border-radius:12px;background:linear-gradient(90deg,var(--accent-2),var(--accent-3));color:#422}
+  .wrap{max-width:1100px;margin:14px auto;padding:0 18px;display:grid;grid-template-columns:1fr 360px;gap:20px}
+  @media(max-width:1000px){ .wrap{ grid-template-columns:1fr } }
+  .card{background:#fff;padding:16px;border-radius:18px;box-shadow:0 10px 28px rgba(170,120,170,0.06)}
+  .controls{display:flex;gap:8px;align-items:center}
+  select,button,input{padding:8px;border-radius:10px;border:1px solid #eee;font:inherit}
+  .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:12px}
+  .day{background:linear-gradient(180deg,#fff,#fffaf7);padding:12px;border-radius:12px;min-height:84px;position:relative;cursor:pointer}
+  .day .num{font-weight:800;color:#5a2b4a}
+  .badges{position:absolute;bottom:8px;left:8px;right:8px;display:flex;gap:6px;flex-wrap:wrap}
+  .badge{padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,var(--accent-2),var(--accent-3));font-size:12px}
+  .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);align-items:center;justify-content:center}
+  .modal{background:#fff;padding:16px;border-radius:14px;width:360px}
+  .step-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+  .step-row input{padding:8px;border-radius:8px;border:1px solid #eee}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">
-    <div class="blob">🍓</div>
-    <div class="brand">
-      <div class="title">FlowTime</div>
-      <div class="sub">cute routines, big wins</div>
+  <div class="brand">
+    <div class="logo">🍓</div>
+    <div>
+      <div style="font-weight:800;color:#5a2b4a">FlowTime Calendar</div>
+      <div style="font-size:12px;color:var(--muted)">schedule & assign routines</div>
     </div>
   </div>
-
   <div class="nav">
-    <a class="btn btn-ghost" href="calendar.html">Calendar</a>
-    <a class="btn btn-primary" href="routines.html">Manage Routines</a>
+    <a href="index.html">Home</a>
+    <a href="routines.html">Routines</a>
   </div>
 </header>
 
 <main class="wrap">
-  <!-- left -->
   <section class="card">
-    <div class="welcome">
-      <div>
-        <h2>Hi — let's make today delightful ✨</h2>
-        <p class="lead">Quick start your pinned routines or run everything for today with a single tap.</p>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="monthSelect"></select>
+        <select id="yearSelect"></select>
+        <div id="monthTitle" style="color:var(--muted);font-weight:700;margin-left:6px"></div>
+      </div>
+      <div class="controls">
+        <button onclick="goToday()">Today</button>
+        <button onclick="openCreateModal()">➕ Create Routine</button>
       </div>
     </div>
 
-    <div style="margin-top:14px">
-      <h3 style="margin:0 0 8px 0">Pinned Routines</h3>
-      <div class="pinned-grid" id="pinnedGrid"></div>
-    </div>
-
-    <div style="margin-top:14px">
-      <h3 style="margin:0 0 8px 0">Today's Routines</h3>
-      <div id="todayArea" class="today-list"></div>
-      <button id="playAllBtn" class="play-all" style="display:none">▶ Play All Routines Today</button>
-    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
   </section>
 
-  <!-- widget -->
-  <aside class="card widget">
-    <div class="date-large" id="dateLabel"></div>
-    <div class="live-clock" id="liveClock">--:--</div>
-
-    <div style="margin-top:12px">
-      <strong>Today</strong>
-      <div class="todayList" id="widgetTodayList"></div>
+  <aside class="card">
+    <h3 id="selectedDateLabel">Select a day</h3>
+    <label><strong>Add an existing routine</strong></label>
+    <select id="routineSelect" style="margin-top:8px"></select>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="assignSelectedRoutine()">Add to Day</button>
+      <button onclick="openCreateModal()">Create</button>
     </div>
-
-    <div id="timerArea" class="timer" style="display:none">
-      <div class="step-name" id="timerStepName"></div>
-      <div class="time-remaining" id="timerRemaining">00:00</div>
-      <div class="controls">
-        <button class="tiny" id="pauseBtn">Pause</button>
-        <button class="tiny" id="skipBtn">Skip</button>
-        <button class="tiny" id="stopBtn">Stop</button>
-      </div>
-      <div class="confetti-canvas" id="confettiArea" style="display:none">
-        <canvas id="confettiCanvas" class="confetti"></canvas>
-      </div>
-    </div>
+    <h4 style="margin-top:12px">Routines on this day</h4>
+    <div id="dayRoutines"></div>
   </aside>
 </main>
 
+<!-- Modal: create/edit -->
+<div id="modal" class="modal-backdrop">
+  <div class="modal" id="modalContent">
+    <h3 id="modalTitle">New Routine</h3>
+    <input id="modalName" placeholder="Routine name" style="width:100%;margin-bottom:8px;padding:8px;border-radius:8px;border:1px solid #eee" />
+    <div id="modalSteps"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="addModalStep()">+ Step</button>
+      <button onclick="clearModal()">Clear</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="saveModalRoutine()">Save</button>
+      <button onclick="saveAndAssignFromModal()">Save & Assign</button>
+      <button onclick="closeModal()" style="background:#eee">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* =========================
-   Data model in localStorage:
-   - routines: [{id,name,steps:[{id,name,time}], totalTime, pinned}]
-   - calendarData: {"YYYY-M-D": [routineId, ...]}
-   ========================= */
+/* ---------- helpers ---------- */
+const pad = n => n<10?'0'+n:n;
+const monthSelect = document.getElementById('monthSelect'), yearSelect = document.getElementById('yearSelect');
+function uid(){ return Date.now()+Math.floor(Math.random()*1000) }
+function isoKeyFromParts(y,m,d){ return `${y}-${m}-${d}` }
+function getRoutines(){ return JSON.parse(localStorage.getItem('routines')||'[]') }
+function getCalendar(){ return JSON.parse(localStorage.getItem('calendarData')||'{}') }
+function setRoutines(arr){ localStorage.setItem('routines', JSON.stringify(arr)); localStorage.setItem('flowtime_sync', Date.now()); }
+function setCalendar(obj){ localStorage.setItem('calendarData', JSON.stringify(obj)); localStorage.setItem('flowtime_sync', Date.now()); }
 
-const pad = n => n < 10 ? '0'+n : ''+n;
-function isoTodayKey(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
-function uid(){ return Date.now() + Math.floor(Math.random()*1000); }
-function escapeHtml(s){ return (s||'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-/* ---------- Live clock ---------- */
-function updateClock(){
+/* ---------- selectors init ---------- */
+(function initSelectors(){
+  for(let m=0;m<12;m++){ monthSelect.appendChild(new Option(new Date(0,m).toLocaleString('default',{month:'long'}), m)); }
   const now = new Date();
-  document.getElementById('liveClock').innerText = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  document.getElementById('dateLabel').innerText = now.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric' });
-}
-setInterval(updateClock, 1000); updateClock();
+  for(let y=2023;y<=2035;y++) yearSelect.appendChild(new Option(y,y));
+  monthSelect.value = now.getMonth(); yearSelect.value = now.getFullYear();
+})();
 
-/* ---------- Render functions ---------- */
-function getRoutines(){ return JSON.parse(localStorage.getItem('routines') || '[]'); }
-function getCalendar(){ return JSON.parse(localStorage.getItem('calendarData') || '{}'); }
+monthSelect.onchange = renderCalendar; yearSelect.onchange = renderCalendar;
 
-function renderPinned(){
-  const grid = document.getElementById('pinnedGrid');
-  grid.innerHTML = '';
-  const routines = getRoutines().filter(r=>r.pinned);
-  if(routines.length === 0){ grid.innerHTML = '<div style="color:#777">No pinned routines yet — pin some!</div>'; return; }
-  routines.forEach(r => {
-    const card = document.createElement('div'); card.className='pinned-card';
-    card.innerHTML = `<div style="display:flex;flex-direction:column">
-      <div class="routine-title"><span>${escapeHtml(r.name)}</span><small class="meta">${r.totalTime} min</small></div>
-      <div class="meta">${r.steps.length} steps</div>
-    </div>`;
-    const actions = document.createElement('div'); actions.className='card-actions';
-    const play = document.createElement('button'); play.className='tiny play'; play.textContent='▶ Play'; play.onclick = ()=> startRoutineById(r.id);
-    const edit = document.createElement('a'); edit.className='tiny edit'; edit.href = `routines.html?edit=${r.id}`; edit.textContent='✎ Edit';
-    const assign = document.createElement('a'); assign.className='tiny assign'; assign.href = `calendar.html?select=${isoTodayKey()}&openAssign=${r.id}`; assign.textContent='📅 Assign';
-    const del = document.createElement('button'); del.className='tiny del'; del.textContent='🗑'; del.onclick = ()=> { if(confirm('Delete pinned routine? This removes it entirely.')) deleteRoutineById(r.id); };
-    actions.appendChild(play); actions.appendChild(edit); actions.appendChild(assign); actions.appendChild(del);
-    card.appendChild(actions);
-    grid.appendChild(card);
-  });
-}
-
-/* ---------- Today's routines render + play all ---------- */
-function renderToday(){
-  const box = document.getElementById('todayArea');
-  const widgetList = document.getElementById('widgetTodayList');
-  box.innerHTML = ''; widgetList.innerHTML = '';
-  const key = isoTodayKey();
-  const cd = getCalendar();
-  const ids = cd[key] || [];
-  const routines = getRoutines();
-
-  if(ids.length === 0){
-    box.innerHTML = '<div style="color:#777">No routines scheduled for today</div>';
-    widgetList.innerHTML = '<div style="color:#777">No routines</div>';
-    document.getElementById('playAllBtn').style.display = 'none';
-    return;
-  }
-
-  document.getElementById('playAllBtn').style.display = 'block';
-  document.getElementById('playAllBtn').onclick = () => playAllForToday(ids.slice());
-
-  ids.forEach(id => {
-    const r = routines.find(x=>x.id === id);
-    if(!r) return;
-    // main list row
-    const row = document.createElement('div'); row.className='today-row';
-    const left = document.createElement('div'); left.innerHTML = `<div style="font-weight:800;color:#5a2b4a">${escapeHtml(r.name)}</div><div class="meta">${r.steps.length} steps • ${r.totalTime} min</div>`;
-    const right = document.createElement('div');
-    const play = document.createElement('button'); play.className='tiny play'; play.textContent='▶ Play'; play.onclick = ()=> startRoutineById(r.id);
-    const edit = document.createElement('a'); edit.className='tiny edit'; edit.href = `routines.html?edit=${r.id}`; edit.textContent='✎';
-    const assign = document.createElement('a'); assign.className='tiny assign'; assign.href = `calendar.html?select=${key}&openAssign=${r.id}`; assign.textContent='📅';
-    const remove = document.createElement('button'); remove.className='tiny del'; remove.textContent='Remove'; remove.onclick = ()=>{
-      if(!confirm('Remove this routine from today?')) return;
-      removeRoutineFromDay(key, r.id);
-    };
-    right.appendChild(play); right.appendChild(edit); right.appendChild(assign); right.appendChild(remove);
-    row.appendChild(left); row.appendChild(right);
-    box.appendChild(row);
-
-    // widget mini list
-    const wrow = document.createElement('div'); wrow.style.display='flex'; wrow.style.justifyContent='space-between'; wrow.style.alignItems='center'; wrow.style.padding='8px'; wrow.style.borderRadius='10px'; wrow.style.background='#fff';
-    wrow.innerHTML = `<div style="font-weight:700">${escapeHtml(r.name)}</div>`;
-    const wp = document.createElement('button'); wp.className='tiny play'; wp.textContent='Start'; wp.onclick = ()=> startRoutineById(r.id);
-    wrow.appendChild(wp);
-    widgetList.appendChild(wrow);
-  });
-}
-
-/* ---------- Data mutations ---------- */
-function removeRoutineFromDay(key, id){
-  const cd = getCalendar();
-  cd[key] = (cd[key]||[]).filter(x=>x!==id);
-  if((cd[key]||[]).length === 0) delete cd[key];
-  localStorage.setItem('calendarData', JSON.stringify(cd));
-  // update UI instantly
-  renderToday(); renderPinned(); triggerCrossTab();
-}
-function deleteRoutineById(id){
-  let arr = getRoutines().filter(r=>r.id !== id);
-  localStorage.setItem('routines', JSON.stringify(arr));
-  // remove from calendar
-  const cd = getCalendar();
-  Object.keys(cd).forEach(k => { cd[k] = cd[k].filter(x=>x!==id); if(cd[k].length === 0) delete cd[k]; });
-  localStorage.setItem('calendarData', JSON.stringify(cd));
-  renderPinned(); renderToday(); triggerCrossTab();
-}
-
-/* ---------- Timer system (step-by-step & play-all) ---------- */
-let playQueue = []; // array of {routineId,...} for Play All
-let timerState = null; // {routineId, steps, idx, remaining, paused, interval}
-
-const timerArea = document.getElementById('timerArea');
-const timerStepName = document.getElementById('timerStepName');
-const timerRemaining = document.getElementById('timerRemaining');
-const pauseBtn = document.getElementById('pauseBtn');
-const skipBtn = document.getElementById('skipBtn');
-const stopBtn = document.getElementById('stopBtn');
-
-pauseBtn.onclick = ()=> togglePause();
-skipBtn.onclick = ()=> skipStep();
-stopBtn.onclick = ()=> stopEverything();
-
-function startRoutineById(rid){
-  const routines = getRoutines();
-  const r = routines.find(x=>x.id===rid);
-  if(!r || !r.steps || r.steps.length === 0) return alert('This routine has no steps');
-  // convert step minutes -> seconds (ensure at least 5 sec if 0)
-  const steps = r.steps.map(s => ({ ...s, secs: Math.max(5, Math.round((Number(s.time)||0) * 60)) }));
-  playQueue = []; // clear any existing Play All queue - single routine plays now
-  startQueue([{ routineId: rid, steps }]);
-}
-
-/* Play-All: receives array of routine IDs or array of objects */ 
-function playAllForToday(ids){
-  if(!ids || ids.length === 0) return;
-  const routines = getRoutines();
-  // build queue of {routineId, steps}
-  const q = ids.map(id => {
-    const r = routines.find(x=>x.id===id);
-    if(!r) return null;
-    return { routineId: id, steps: r.steps.map(s => ({...s, secs: Math.max(5, Math.round((Number(s.time)||0)*60)) })) };
-  }).filter(Boolean);
-  startQueue(q);
-}
-
-function startQueue(q){
-  if(!q || q.length === 0) return;
-  playQueue = q.slice();
-  // if already running, let it continue; else start processing
-  if(timerState) return;
-  processNextRoutineInQueue();
-}
-
-function processNextRoutineInQueue(){
-  if(playQueue.length === 0){
-    // finished all routines
-    return;
-  }
-  const next = playQueue.shift(); // {routineId, steps}
-  // start first step for this routine
-  timerState = { routineId: next.routineId, steps: next.steps, idx: 0, remaining: next.steps[0].secs, paused:false, interval:null };
-  showTimer();
-  tickLoop();
-}
-
-function tickLoop(){
-  if(!timerState) return;
-  updateTimerDisplay();
-  timerState.interval = setInterval(() => {
-    if(timerState.paused) return;
-    timerState.remaining -= 1;
-    if(timerState.remaining <= 0){
-      // play ding for step complete
-      playDing();
-      // move to next step
-      timerState.idx += 1;
-      if(timerState.idx >= timerState.steps.length){
-        clearInterval(timerState.interval);
-        timerState.interval = null;
-        // routine finished — confetti pop + sound
-        playPop();
-        showConfetti();
-        // small delay then either continue with next routine or stop UI
-        setTimeout(() => {
-          hideConfetti();
-          // clear current timer state and move to next routine
-          timerState = null;
-          if(playQueue.length > 0) {
-            // start next routine
-            processNextRoutineInQueue();
-          } else {
-            // finished all
-            hideTimer();
-          }
-        }, 1800);
-        return;
-      } else {
-        // start next step
-        timerState.remaining = timerState.steps[timerState.idx].secs;
-        updateTimerDisplay();
-      }
-    } else {
-      updateTimerDisplay();
-    }
-  }, 1000);
-}
-
-function togglePause(){
-  if(!timerState) return;
-  timerState.paused = !timerState.paused;
-  pauseBtn.innerText = timerState.paused ? 'Resume' : 'Pause';
-}
-
-function skipStep(){
-  if(!timerState) return;
-  clearInterval(timerState.interval);
-  timerState.interval = null;
-  // play ding immediate for skip
-  playDing();
-  timerState.idx += 1;
-  if(timerState.idx >= timerState.steps.length){
-    // finished this routine
-    playPop(); showConfetti();
-    setTimeout(()=>{
-      hideConfetti();
-      timerState = null;
-      if(playQueue.length > 0) processNextRoutineInQueue(); else hideTimer();
-    }, 1400);
-  } else {
-    timerState.remaining = timerState.steps[timerState.idx].secs;
-    tickLoop();
-  }
-}
-
-function stopEverything(){
-  if(!timerState) return;
-  clearInterval(timerState.interval);
-  timerState = null;
-  playQueue = [];
-  hideTimer();
-  hideConfetti();
-}
-
-function showTimer(){
-  timerArea.style.display = 'block';
-  pauseBtn.innerText = 'Pause';
-  document.getElementById('confettiArea').style.display = 'none';
-  // resize canvas to area
-  const canvas = document.getElementById('confettiCanvas');
-  canvas.width = document.getElementById('confettiArea').clientWidth;
-  canvas.height = document.getElementById('confettiArea').clientHeight;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function hideTimer(){ timerArea.style.display = 'none'; }
-function updateTimerDisplay(){
-  if(!timerState) return;
-  const s = timerState.steps[timerState.idx];
-  timerStepName.innerText = `Step ${timerState.idx+1}: ${s.name || 'Step'}`;
-  const mm = Math.floor(timerState.remaining / 60);
-  const ss = timerState.remaining % 60;
-  timerRemaining.innerText = `${pad(mm)}:${pad(ss)}`;
-}
-
-/* ---------- Sounds (WebAudio) ---------- */
-function playDing(){
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = ctx.createOscillator(); const g = ctx.createGain();
-    o.type = 'sine'; o.frequency.value = 880;
-    g.gain.value = 0.0001;
-    o.connect(g); g.connect(ctx.destination);
-    const now = ctx.currentTime;
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.2, now + 0.01);
-    o.start(now);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
-    o.stop(now + 0.3);
-  } catch(e){}
-}
-
-function playPop(){
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const o1 = ctx.createOscillator(), g1 = ctx.createGain();
-    o1.type = 'triangle'; o1.frequency.value = 700;
-    o1.connect(g1); g1.connect(ctx.destination);
-    g1.gain.setValueAtTime(0.0001, ctx.currentTime);
-    g1.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.01);
-    o1.start();
-    g1.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
-    o1.stop(ctx.currentTime + 0.2);
-  } catch(e){}
-}
-
-/* ---------- Confetti (inside widget) ---------- */
-let confettiAnim = null;
-function showConfetti(){
-  const canvas = document.getElementById('confettiCanvas');
-  const area = document.getElementById('confettiArea');
-  area.style.display = 'block';
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width = area.clientWidth;
-  const H = canvas.height = area.clientHeight;
-  let pieces = [];
-  const colors = ['#FFBFD8','#FFD6A5','#CAFFBF','#9BF6FF','#BDB2FF','#FF8FAB'];
-
-  for(let i=0;i<60;i++){
-    pieces.push({
-      x: Math.random()*W,
-      y: Math.random()*-H,
-      w: 6+Math.random()*10,
-      h: 6+Math.random()*10,
-      speed: 1+Math.random()*4,
-      angle: Math.random()*360,
-      color: colors[Math.floor(Math.random()*colors.length)],
-      rot: Math.random()*360,
-      rotSpeed: (Math.random()-0.5)*10
+/* ---------- Calendar rendering (dynamic) ---------- */
+function renderCalendar(){
+  const month = Number(monthSelect.value), year = Number(yearSelect.value);
+  document.getElementById('monthTitle').innerText = ` ${new Date(year,month).toLocaleString('default',{month:'long'})} ${year}`;
+  const grid = document.getElementById('calendarGrid'); grid.innerHTML = '';
+  const firstDay = new Date(year,month,1), daysInMonth = new Date(year,month+1,0).getDate();
+  for(let i=0;i<firstDay.getDay();i++) grid.appendChild(document.createElement('div'));
+  const cd = getCalendar(), routines = getRoutines();
+  for(let d=1; d<=daysInMonth; d++){
+    const key = isoKeyFromParts(year, month+1, d);
+    const card = document.createElement('div'); card.className='day'; card.dataset.key = key;
+    card.onclick = ()=> selectDay(key);
+    card.innerHTML = `<div class="num">${d}</div><div class="badges"></div>`;
+    const ids = cd[key] || [];
+    const bc = card.querySelector('.badges');
+    ids.slice(0,3).forEach(id => {
+      const r = routines.find(x=>x.id===id); if(r){ const b = document.createElement('div'); b.className='badge'; b.textContent = r.name; bc.appendChild(b); }
     });
+    if(ids.length > 3){ const more = document.createElement('div'); more.className='badge'; more.textContent = `+${ids.length-3} more`; bc.appendChild(more); }
+    grid.appendChild(card);
   }
-  let t = 0;
-  function frame(){
-    t++;
-    ctx.clearRect(0,0,W,H);
-    for(let p of pieces){
-      p.y += p.speed;
-      p.x += Math.sin(t/10 + p.angle) * 0.5;
-      p.rot += p.rotSpeed;
-      ctx.save();
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.rot*Math.PI/180);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-      ctx.restore();
-    }
-    pieces = pieces.filter(p => p.y < H + 60);
-    if(pieces.length > 0) confettiAnim = requestAnimationFrame(frame);
-    else { cancelAnimationFrame(confettiAnim); confettiAnim = null; }
-  }
-  frame();
-}
-function hideConfetti(){ const area = document.getElementById('confettiArea'); area.style.display = 'none'; const canvas = document.getElementById('confettiCanvas'); const ctx = canvas.getContext('2d'); ctx && ctx.clearRect(0,0,canvas.width,canvas.height); if(confettiAnim) cancelAnimationFrame(confettiAnim); confettiAnim = null; }
-
-/* ---------- Cross-tab & live update helper ---------- */
-function triggerCrossTab(){
-  // localStorage event only fires in other tabs, so write a small timestamp to trigger storage event
-  localStorage.setItem('flowtime_sync', Date.now());
+  clearSelected();
+  populateRoutineDropdown();
 }
 
-/* Listen to storage event to update UI across tabs */
-window.addEventListener('storage', (e) => {
+/* selection + display */
+let selectedKey = null;
+function selectDay(key){
+  selectedKey = key;
+  document.getElementById('selectedDateLabel').innerText = `Selected: ${key}`;
+  document.querySelectorAll('.day').forEach(el=>el.style.outline='');
+  const el = document.querySelector(`.day[data-key="${key}"]`); if(el) el.style.outline = '3px solid rgba(170,120,170,0.12)';
+  displayRoutinesForDay();
+}
+function clearSelected(){ selectedKey = null; document.getElementById('selectedDateLabel').innerText = 'Select a day'; document.getElementById('dayRoutines').innerHTML = ''; }
+
+/* populate dropdown */
+function populateRoutineDropdown(){
+  const dd = document.getElementById('routineSelect'); dd.innerHTML = '<option value="">-- select routine --</option>';
+  getRoutines().forEach(r => {
+    const o = document.createElement('option'); o.value = r.id; o.textContent = `${r.name} (${r.totalTime} min)`; dd.appendChild(o);
+  });
+}
+
+/* assign */
+function assignSelectedRoutine(){
+  if(!selectedKey) return alert('Choose a day first');
+  const id = Number(document.getElementById('routineSelect').value); if(!id) return alert('Choose a routine');
+  const cd = getCalendar(); if(!cd[selectedKey]) cd[selectedKey]=[]; cd[selectedKey].push(id); cd[selectedKey] = Array.from(new Set(cd[selectedKey])); setCalendar(cd); renderCalendar(); displayRoutinesForDay();
+}
+
+/* display for day */
+function displayRoutinesForDay(){
+  const box = document.getElementById('dayRoutines'); box.innerHTML = '';
+  if(!selectedKey) return;
+  const cd = getCalendar(), routines = getRoutines();
+  const ids = cd[selectedKey] || [];
+  if(ids.length === 0){ box.innerHTML = '<div style="color:#777">No routines</div>'; return; }
+  ids.forEach(id => {
+    const r = routines.find(x=>x.id===id); if(!r) return;
+    const el = document.createElement('div'); el.style.padding='8px'; el.style.borderRadius='10px'; el.style.marginBottom='8px'; el.style.background='linear-gradient(180deg,#fff,#fffaf7)';
+    el.innerHTML = `<div style="font-weight:800;color:#5a2b4a">${r.name}</div><div style="font-size:13px;color:var(--muted)">${r.totalTime} min • ${r.steps.length} steps</div>`;
+    const actions = document.createElement('div'); actions.style.marginTop='8px'; actions.style.display='flex'; actions.style.gap='8px';
+    const edit = document.createElement('button'); edit.textContent='Edit'; edit.onclick = ()=> openCreateModalForEdit(r.id);
+    const remove = document.createElement('button'); remove.textContent='Remove'; remove.onclick = ()=> { if(!confirm('Remove from this day?')) return; const cd2 = getCalendar(); cd2[selectedKey] = cd2[selectedKey].filter(x=>x!==r.id); setCalendar(cd2); displayRoutinesForDay(); renderCalendar(); };
+    actions.appendChild(edit); actions.appendChild(remove); el.appendChild(actions); box.appendChild(el);
+  });
+}
+
+/* Today helper */
+function goToday(){
+  const now = new Date(); monthSelect.value = now.getMonth(); yearSelect.value = now.getFullYear(); renderCalendar();
+  const key = isoKeyFromParts(now.getFullYear(), now.getMonth()+1, now.getDate());
+  setTimeout(()=> selectDay(key), 100);
+}
+
+/* ---------- Modal create/edit ---------- */
+const modal = document.getElementById('modal');
+const modalName = document.getElementById('modalName'), modalSteps = document.getElementById('modalSteps'), modalTitle = document.getElementById('modalTitle');
+let modalEditingId = null;
+
+function openCreateModal(){ modalEditingId = null; modalTitle.innerText = 'Create Routine'; modalName.value=''; modalSteps.innerHTML=''; addModalStep(); showModal(); }
+function openCreateModalForEdit(id){ openCreateModal(); setTimeout(()=> openCreateModalForEditSlow(id), 160); }
+function openCreateModalForEditSlow(id){
+  modalEditingId = id;
+  const r = getRoutines().find(x=>x.id===id);
+  if(!r) return;
+  modalTitle.innerText = 'Edit Routine';
+  modalName.value = r.name;
+  modalSteps.innerHTML = '';
+  r.steps.forEach(s => addModalStep(s));
+  showModal();
+}
+function showModal(){ modal.style.display = 'flex'; }
+function closeModal(){ modal.style.display = 'none'; clearModal(); }
+function addModalStep(step={id:uid(), name:'', time:''}){ const row = document.createElement('div'); row.className='step-row'; row.dataset.id = step.id; row.innerHTML = `<input class="step-name" placeholder="Step name" value="${(step.name||'')}" /><input class="step-time" type="number" placeholder="min" value="${step.time||''}" style="width:90px"/><button onclick="this.parentElement.remove()">🗑</button>`; modalSteps.appendChild(row); }
+function clearModal(){ modalEditingId = null; modalName.value=''; modalSteps.innerHTML=''; }
+function saveModalRoutine(){
+  const name = modalName.value.trim(); if(!name) return alert('Enter name');
+  const rows = Array.from(modalSteps.querySelectorAll('.step-row'));
+  const steps = rows.map(r => ({ id: r.dataset.id || uid(), name: r.querySelector('.step-name').value.trim(), time: Number(r.querySelector('.step-time').value)||0 })).filter(s=>s.name);
+  const total = steps.reduce((a,b)=>a+(b.time||0), 0);
+  let routines = getRoutines();
+  if(modalEditingId){
+    routines = routines.map(x => x.id === modalEditingId ? {...x, name, steps, totalTime: total} : x);
+  } else {
+    routines.push({ id: uid(), name, steps, totalTime: total, pinned:false });
+  }
+  setRoutines(routines);
+  populateRoutineDropdown(); renderCalendar(); closeModal();
+}
+function saveAndAssignFromModal(){
+  saveModalRoutine();
+  const routines = getRoutines();
+  const r = modalEditingId ? routines.find(x=>x.id===modalEditingId) : routines[routines.length-1];
+  if(!r) return;
+  if(!selectedKey) return alert('Please pick a day first');
+  const cd = getCalendar(); if(!cd[selectedKey]) cd[selectedKey] = []; cd[selectedKey].push(r.id); cd[selectedKey] = Array.from(new Set(cd[selectedKey])); setCalendar(cd); renderCalendar(); displayRoutinesForDay(); closeModal();
+}
+
+/* quick open edit */
+function openCreateModalForEdit(id){ modalEditingId = id; const r = getRoutines().find(x=>x.id===id); if(!r) return; modalTitle.innerText='Edit Routine'; modalName.value = r.name; modalSteps.innerHTML = ''; r.steps.forEach(s => addModalStep(s)); showModal(); }
+
+/* assign from dropdown */
+function assignSelectedRoutine(){
+  if(!selectedKey) return alert('Choose a day');
+  const id = Number(document.getElementById('routineSelect').value); if(!id) return alert('Choose routine');
+  const cd = getCalendar(); if(!cd[selectedKey]) cd[selectedKey]=[]; cd[selectedKey].push(id); cd[selectedKey] = Array.from(new Set(cd[selectedKey])); setCalendar(cd); renderCalendar(); displayRoutinesForDay();
+}
+
+/* ---------- URL param support ---------- */
+function readUrlActions(){
+  const params = new URLSearchParams(location.search);
+  const select = params.get('select');
+  const openAssign = params.get('openAssign');
+  const edit = params.get('edit');
+  if(edit){ setTimeout(()=> openCreateModalForEdit(Number(edit)), 200); }
+  if(select){
+    setTimeout(()=> selectDay(select), 200);
+    if(openAssign){ setTimeout(()=> { openCreateModalForEdit(Number(openAssign)); }, 500); }
+  }
+}
+
+/* listen to storage event to update calendar in real-time */
+window.addEventListener('storage', (e)=>{
   if(e.key === 'flowtime_sync') {
-    renderPinned(); renderToday();
+    // another tab changed data
+    renderCalendar();
+    // keep selected day details in sync
+    if(selectedKey) displayRoutinesForDay();
+    populateRoutineDropdown();
   }
 });
 
-/* ---------- Initialization ---------- */
-function init(){
-  renderPinned(); renderToday();
-}
-init();
-
-/* Also refresh UI when saving/updating routines from other pages (they should call triggerCrossTab) */
+/* init */
+(function init(){
+  populateRoutineDropdown();
+  renderCalendar();
+  readUrlActions();
+})();
 </script>
 </body>
 </html>
