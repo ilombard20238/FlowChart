@@ -4,45 +4,56 @@
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>FlowTime — Routines</title>
 <style>
-  body{font-family:'Poppins',sans-serif;background:#f0f4f8;margin:0;padding:0}
-  header{background:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-  .btn{background:#6c4ab6;color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none}
-  h1{color:#6c4ab6;margin:0}
-  .container{max-width:900px;margin:22px auto;padding:0 18px;display:grid;grid-template-columns:1fr 360px;gap:20px}
-  .card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+  :root{ --accent-1:#FFBFD8; --accent-2:#FFD6A5; --accent-3:#CAFFBF; --muted:#6b556b }
+  *{box-sizing:border-box}
+  body{font-family:'Poppins',sans-serif;background:linear-gradient(180deg,#fff9fb,#fff7f9);margin:0;color:#3a2b3a}
+  header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px}
+  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));display:flex;align-items:center;justify-content:center;font-size:28px}
+  .nav a{margin-left:8px;text-decoration:none;padding:8px 12px;border-radius:12px;background:linear-gradient(90deg,var(--accent-2),var(--accent-3));color:#422}
+  .container{max-width:1100px;margin:14px auto;padding:0 18px;display:grid;grid-template-columns:1fr 360px;gap:20px}
+  @media(max-width:1000px){ .container{ grid-template-columns:1fr } }
+  .card{background:#fff;padding:16px;border-radius:18px;box-shadow:0 10px 28px rgba(170,120,170,0.06)}
+  input,select,button{padding:8px;border-radius:10px;border:1px solid #eee;font:inherit}
   .step-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
-  .step-row input{padding:8px;border-radius:8px;border:1px solid #ddd}
-  .muted{background:#eee;border:none;padding:8px;border-radius:8px;cursor:pointer}
-  .primary{background:#6c4ab6;color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer}
-  .danger{background:#ff6b6b;color:#fff;border:none;padding:8px;border-radius:8px;cursor:pointer}
-  .routine-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:#fdfdfd;margin-bottom:10px}
+  .step-row input{padding:8px;border-radius:8px;border:1px solid #eee}
+  .tiny{padding:8px 10px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .primary{background:linear-gradient(90deg,var(--accent-2),var(--accent-3));color:#3a2b3a}
+  .danger{background:#ff6b6b;color:#fff}
+  .muted{background:#fff;border:1px solid #eee}
 </style>
 </head>
 <body>
-
 <header>
-  <a class="btn" href="index.html">🏠 Home</a>
-  <h1>🧩 Manage Routines</h1>
-  <a class="btn" href="calendar.html">Calendar</a>
-</header>
-
-<div class="container">
-  <div class="card">
-    <h2 id="editorTitle">Create Routine</h2>
-    <input id="routineName" placeholder="Routine name" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd;margin-bottom:8px"/>
-    <div id="stepsList"></div>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="primary" onclick="addStepEditor()">+ Add Step</button>
-      <button class="muted" onclick="clearEditor()">Clear</button>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="primary" onclick="saveEditorRoutine()">Save Routine</button>
-      <button class="muted" onclick="saveAndAssignPrompt()">Save & Assign to Day</button>
-      <button class="danger" id="deleteRoutineBtn" style="display:none" onclick="deleteEditorRoutine()">Delete</button>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div class="logo">🍓</div>
+    <div>
+      <div style="font-weight:800;color:#5a2b4a">FlowTime Routines</div>
+      <div style="font-size:12px;color:var(--muted)">create • edit • pin • assign</div>
     </div>
   </div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="calendar.html">Calendar</a>
+  </div>
+</header>
 
-  <div>
+<main class="container">
+  <section class="card">
+    <h2 id="editorTitle">Create Routine</h2>
+    <input id="routineName" placeholder="Routine name" style="width:100%;margin-top:8px" />
+    <div id="stepsList" style="margin-top:12px"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="tiny primary" onclick="addStepEditor()">+ Add Step</button>
+      <button class="tiny muted" onclick="clearEditor()">Clear</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="tiny primary" onclick="saveEditorRoutine()">Save</button>
+      <button class="tiny muted" onclick="saveAndAssignPrompt()">Save & Assign</button>
+      <button class="tiny danger" id="deleteRoutineBtn" style="display:none" onclick="deleteEditorRoutine()">Delete</button>
+    </div>
+  </section>
+
+  <aside>
     <div class="card" style="margin-bottom:12px">
       <h3>Pinned</h3>
       <div id="pinnedList"></div>
@@ -52,151 +63,162 @@
       <h3>All Routines</h3>
       <div id="routinesList"></div>
     </div>
-  </div>
-</div>
+  </aside>
+</main>
 
 <!-- assign modal -->
 <div id="assignModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);align-items:center;justify-content:center">
-  <div style="background:#fff;padding:14px;border-radius:10px;width:320px">
+  <div style="background:#fff;padding:14px;border-radius:12px;width:320px">
     <h3>Assign Routine</h3>
-    <input id="assignDate" type="date" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ddd"/>
+    <input id="assignDate" type="date" style="width:100%;padding:8px;border-radius:8px;border:1px solid #eee" />
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="primary" onclick="confirmAssign()">Assign</button>
-      <button class="muted" onclick="closeAssignModal()">Cancel</button>
+      <button class="tiny primary" onclick="confirmAssign()">Assign</button>
+      <button class="tiny muted" onclick="closeAssignModal()">Cancel</button>
     </div>
-    <input type="hidden" id="assignRoutineId"/>
+    <input type="hidden" id="assignRoutineId" />
   </div>
 </div>
 
 <script>
-/* Similar data model across pages */
-function uid(){return Date.now()+Math.floor(Math.random()*1000)}
-function escapeHtml(s){return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
+/* ---------- helpers ---------- */
+function uid(){ return Date.now()+Math.floor(Math.random()*1000) }
+function pad(n){ return n<10 ? '0'+n : ''+n }
+function getRoutines(){ return JSON.parse(localStorage.getItem('routines')||'[]') }
+function getCalendar(){ return JSON.parse(localStorage.getItem('calendarData')||'{}') }
+function setRoutines(arr){ localStorage.setItem('routines', JSON.stringify(arr)); localStorage.setItem('flowtime_sync', Date.now()); }
+function setCalendar(obj){ localStorage.setItem('calendarData', JSON.stringify(obj)); localStorage.setItem('flowtime_sync', Date.now()); }
 
-/* Editor */
+/* ---------- Editor ---------- */
 let editingId = null;
-function addStepEditor(step={id:uid(),name:'',time:''}){
+function addStepEditor(step={id:uid(), name:'', time:''}){
   const container = document.getElementById('stepsList');
-  const div = document.createElement('div'); div.className='step-row'; div.dataset.stepId = step.id;
-  div.innerHTML = `<input class="step-name" placeholder="Step name" value="${escapeHtml(step.name)}"/><input class="step-time" type="number" placeholder="min" value="${step.time||''}" style="width:90px"/><button onclick="this.parentElement.remove()">🗑</button>`;
+  const div = document.createElement('div'); div.className = 'step-row'; div.dataset.id = step.id;
+  div.innerHTML = `<input class="step-name" placeholder="Step name" value="${step.name||''}" style="flex:1"/><input class="step-time" type="number" placeholder="min" value="${step.time||''}" style="width:90px"/><button onclick="this.parentElement.remove()">🗑</button>`;
   container.appendChild(div);
 }
-function clearEditor(){ editingId=null; document.getElementById('editorTitle').innerText='Create Routine'; document.getElementById('routineName').value=''; document.getElementById('stepsList').innerHTML=''; document.getElementById('deleteRoutineBtn').style.display='none'; }
+function clearEditor(){
+  editingId = null;
+  document.getElementById('editorTitle').innerText = 'Create Routine';
+  document.getElementById('routineName').value = '';
+  document.getElementById('stepsList').innerHTML = '';
+  document.getElementById('deleteRoutineBtn').style.display = 'none';
+}
 
+/* save editor */
 function saveEditorRoutine(){
-  const name = document.getElementById('routineName').value.trim(); if(!name) return alert('Enter name');
+  const name = document.getElementById('routineName').value.trim(); if(!name) return alert('Enter a name');
   const rows = Array.from(document.querySelectorAll('#stepsList .step-row'));
-  const steps = rows.map(r=>({ id: r.dataset.stepId||uid(), name: r.querySelector('.step-name').value.trim(), time: Number(r.querySelector('.step-time').value)||0 })).filter(s=>s.name);
+  const steps = rows.map(r => ({ id: r.dataset.id || uid(), name: r.querySelector('.step-name').value.trim(), time: Number(r.querySelector('.step-time').value) || 0 })).filter(s=>s.name);
   const total = steps.reduce((a,b)=>a+(b.time||0),0);
-  let routines = JSON.parse(localStorage.getItem('routines')||'[]');
+  let arr = getRoutines();
   if(editingId){
-    routines = routines.map(r => r.id===editingId ? {...r, name, steps, totalTime: total} : r);
+    arr = arr.map(r => r.id === editingId ? {...r, name, steps, totalTime: total } : r);
     alert('Routine updated');
   } else {
-    routines.push({ id: uid(), name, steps, totalTime: total, pinned:false });
+    arr.push({ id: uid(), name, steps, totalTime: total, pinned:false });
     alert('Routine created');
   }
-  localStorage.setItem('routines', JSON.stringify(routines));
+  setRoutines(arr);
   clearEditor(); renderAll();
 }
 
-/* Delete routine being edited */
+/* delete editor routine */
 function deleteEditorRoutine(){
   if(!editingId) return;
   if(!confirm('Delete this routine?')) return;
-  let routines = JSON.parse(localStorage.getItem('routines')||'[]'); routines = routines.filter(r=>r.id!==editingId);
-  localStorage.setItem('routines', JSON.stringify(routines));
-  // remove assignments
-  const cd = JSON.parse(localStorage.getItem('calendarData')||'{}');
-  Object.keys(cd).forEach(k=>{ cd[k] = cd[k].filter(x=>x!==editingId); if(cd[k].length===0) delete cd[k]; });
-  localStorage.setItem('calendarData', JSON.stringify(cd));
+  let arr = getRoutines().filter(r=>r.id !== editingId);
+  setRoutines(arr);
+  // remove from calendar
+  const cd = getCalendar();
+  Object.keys(cd).forEach(k => { cd[k] = cd[k].filter(x=>x!==editingId); if(cd[k].length===0) delete cd[k]; });
+  setCalendar(cd);
   alert('Deleted');
   clearEditor(); renderAll();
 }
 
-/* Edit routine */
+/* edit helper */
 function editRoutine(id){
-  const routines = JSON.parse(localStorage.getItem('routines')||'[]'); const r = routines.find(x=>x.id===id);
-  if(!r) return;
-  editingId = id; document.getElementById('editorTitle').innerText='Edit Routine'; document.getElementById('routineName').value = r.name;
-  const container = document.getElementById('stepsList'); container.innerHTML='';
-  r.steps.forEach(s=> addStepEditor(s));
+  const r = getRoutines().find(x=>x.id===id); if(!r) return;
+  editingId = id;
+  document.getElementById('editorTitle').innerText = 'Edit Routine';
+  document.getElementById('routineName').value = r.name;
+  document.getElementById('stepsList').innerHTML = '';
+  r.steps.forEach(s => addStepEditor(s));
   document.getElementById('deleteRoutineBtn').style.display = 'inline-block';
 }
 
-/* Pin toggle */
+/* pin toggle */
 function togglePin(id){
-  let routines = JSON.parse(localStorage.getItem('routines')||'[]'); routines = routines.map(r=> r.id===id ? {...r, pinned:!r.pinned}:r); localStorage.setItem('routines', JSON.stringify(routines)); renderAll();
+  let arr = getRoutines().map(r => r.id === id ? {...r, pinned: !r.pinned} : r);
+  setRoutines(arr); renderAll();
 }
 
-/* Assign modal from routines page */
-function openAssignModal(routineId){ document.getElementById('assignRoutineId').value = routineId; document.getElementById('assignDate').value = ''; document.getElementById('assignModal').style.display='flex'; }
-function closeAssignModal(){ document.getElementById('assignModal').style.display='none'; }
+/* ---------- assign modal ---------- */
+function openAssignModal(rid){ document.getElementById('assignRoutineId').value = rid; document.getElementById('assignDate').value = ''; document.getElementById('assignModal').style.display = 'flex'; }
+function closeAssignModal(){ document.getElementById('assignModal').style.display = 'none'; }
 function confirmAssign(){
-  const dateVal = document.getElementById('assignDate').value;
-  if(!dateVal) return alert('Choose date');
-  const iso = dateVal; // format YYYY-MM-DD
-  const [y,m,d] = iso.split('-');
-  const key = `${y}-${Number(m)}-${Number(d)}`;
+  const dateVal = document.getElementById('assignDate').value; if(!dateVal) return alert('Pick a date');
+  const [y,m,d] = dateVal.split('-'); const key = `${y}-${Number(m)}-${Number(d)}`;
   const rid = Number(document.getElementById('assignRoutineId').value);
-  let cd = JSON.parse(localStorage.getItem('calendarData')||'{}'); if(!cd[key]) cd[key] = []; cd[key].push(rid); cd[key] = Array.from(new Set(cd[key])); localStorage.setItem('calendarData', JSON.stringify(cd));
+  const cd = getCalendar(); if(!cd[key]) cd[key] = []; cd[key].push(rid); cd[key] = Array.from(new Set(cd[key])); setCalendar(cd);
   closeAssignModal(); renderAll(); alert('Assigned to '+key);
 }
 
-/* Render lists */
+/* ---------- render lists ---------- */
 function renderAll(){
   renderPinned(); renderRoutinesList();
 }
 
-/* Pinned list */
+/* pinned */
 function renderPinned(){
-  const pinnedDiv = document.getElementById('pinnedList'); pinnedDiv.innerHTML = '';
-  const routines = JSON.parse(localStorage.getItem('routines')||'[]'); const pinned = routines.filter(r=>r.pinned);
-  if(pinned.length===0) pinnedDiv.innerHTML = '<div style="color:#777">No pinned</div>';
-  pinned.forEach(r=>{
-    const el = document.createElement('div'); el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center'; el.style.padding='8px'; el.style.marginBottom='8px'; el.style.borderRadius='8px'; el.style.background='#fff';
-    el.innerHTML = `<div><strong>${escapeHtml(r.name)}</strong><div style="font-size:13px;color:#555">${r.totalTime} min • ${r.steps.length} steps</div></div>`;
+  const div = document.getElementById('pinnedList'); div.innerHTML = '';
+  const arr = getRoutines().filter(r=>r.pinned);
+  if(arr.length === 0) div.innerHTML = '<div style="color:#777">No pinned routines</div>';
+  arr.forEach(r => {
+    const el = document.createElement('div'); el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center'; el.style.padding='8px'; el.style.borderRadius='8px'; el.style.marginBottom='8px'; el.style.background='#fff';
+    el.innerHTML = `<div><strong>${r.name}</strong><div style="font-size:13px;color:var(--muted)">${r.totalTime} min • ${r.steps.length} steps</div></div>`;
     const actions = document.createElement('div');
-    const e = document.createElement('a'); e.href=`routines.html?edit=${r.id}`; e.style.marginRight='8px'; e.textContent='Edit';
-    const assign = document.createElement('button'); assign.className='muted'; assign.textContent='Assign'; assign.onclick = ()=> openAssignModal(r.id);
-    const unpin = document.createElement('button'); unpin.className='primary'; unpin.textContent='Unpin'; unpin.style.background='#6c4ab6'; unpin.onclick = ()=> togglePin(r.id);
+    const e = document.createElement('a'); e.href = `routines.html?edit=${r.id}`; e.textContent='Edit'; e.style.marginRight='8px';
+    const assign = document.createElement('button'); assign.className='tiny muted'; assign.textContent='Assign'; assign.onclick = ()=> openAssignModal(r.id);
+    const unpin = document.createElement('button'); unpin.className='tiny primary'; unpin.textContent='Unpin'; unpin.onclick = ()=> togglePin(r.id);
     actions.appendChild(e); actions.appendChild(assign); actions.appendChild(unpin);
-    el.appendChild(actions); pinnedDiv.appendChild(el);
+    el.appendChild(actions);
+    div.appendChild(el);
   });
 }
 
-/* Full routines list */
+/* full list */
 function renderRoutinesList(){
-  const box = document.getElementById('routinesList'); box.innerHTML = ''; const routines = JSON.parse(localStorage.getItem('routines')||'[]').slice().sort((a,b)=>b.pinned - a.pinned);
-  if(routines.length===0) box.innerHTML = '<div style="color:#777">No routines yet</div>';
-  routines.forEach(r=>{
-    const div = document.createElement('div'); div.className='routine-item';
-    div.innerHTML = `<div><strong>${escapeHtml(r.name)}</strong><div style="font-size:13px;color:#555">${r.totalTime} min • ${r.steps.length} steps</div></div>`;
+  const box = document.getElementById('routinesList'); box.innerHTML = '';
+  const arr = getRoutines().slice().sort((a,b) => (b.pinned?1:0) - (a.pinned?1:0));
+  if(arr.length === 0) box.innerHTML = '<div style="color:#777">No routines yet</div>';
+  arr.forEach(r => {
+    const div = document.createElement('div'); div.style.display='flex'; div.style.justifyContent='space-between'; div.style.alignItems='center'; div.style.padding='10px'; div.style.borderRadius='10px'; div.style.marginBottom='8px'; div.style.background='#fff';
+    const left = document.createElement('div'); left.innerHTML = `<div style="font-weight:800">${r.name} ${r.pinned?'<small style="color:var(--accent-1)">• pinned</small>':''}</div><div style="font-size:13px;color:var(--muted)">${r.totalTime} min • ${r.steps.length} steps</div>`;
     const actions = document.createElement('div');
-    const edit = document.createElement('a'); edit.href=`routines.html?edit=${r.id}`; edit.textContent='Edit'; edit.style.marginRight='8px';
-    const assign = document.createElement('button'); assign.className='muted'; assign.textContent='Assign'; assign.onclick = ()=> openAssignModal(r.id);
-    const pin = document.createElement('button'); pin.className='primary'; pin.textContent = r.pinned ? 'Unpin' : 'Pin'; pin.onclick = ()=> togglePin(r.id);
-    const del = document.createElement('button'); del.className='danger'; del.textContent='Delete'; del.onclick = ()=>{
-      if(!confirm('Delete routine?')) return;
-      let arr = JSON.parse(localStorage.getItem('routines')||'[]'); arr = arr.filter(x=>x.id!==r.id); localStorage.setItem('routines', JSON.stringify(arr));
-      const cd = JSON.parse(localStorage.getItem('calendarData')||'{}'); Object.keys(cd).forEach(k=>{ cd[k]=cd[k].filter(x=>x!==r.id); if(cd[k].length===0) delete cd[k]; }); localStorage.setItem('calendarData', JSON.stringify(cd));
-      renderAll();
-    };
+    const edit = document.createElement('button'); edit.className='tiny muted'; edit.textContent='Edit'; edit.onclick = ()=> editRoutine(r.id);
+    const assign = document.createElement('button'); assign.className='tiny muted'; assign.textContent='Assign'; assign.onclick = ()=> openAssignModal(r.id);
+    const pin = document.createElement('button'); pin.className='tiny primary'; pin.textContent = r.pinned ? 'Unpin' : 'Pin'; pin.onclick = ()=> togglePin(r.id);
+    const del = document.createElement('button'); del.className='tiny danger'; del.textContent='Delete'; del.onclick = ()=> { if(!confirm('Delete this routine?')) return; let arr2 = getRoutines().filter(x=>x.id!==r.id); setRoutines(arr2); // remove from calendar
+      const cd = getCalendar(); Object.keys(cd).forEach(k => { cd[k] = cd[k].filter(x=>x!==r.id); if(cd[k].length===0) delete cd[k]; }); setCalendar(cd); renderAll(); };
     actions.appendChild(edit); actions.appendChild(assign); actions.appendChild(pin); actions.appendChild(del);
-    div.appendChild(actions); box.appendChild(div);
+    div.appendChild(left); div.appendChild(actions);
+    box.appendChild(div);
   });
 }
 
-/* Save & Assign Prompt (from editor) */
-function saveAndAssignPrompt(){ saveEditorRoutine(); const routines = JSON.parse(localStorage.getItem('routines')||'[]'); const r = routines[routines.length-1]; if(!r) return alert('No routine'); document.getElementById('assignRoutineId').value = r.id; document.getElementById('assignDate').value=''; document.getElementById('assignModal').style.display='flex'; }
+/* ---------- Save & assign prompt from editor ---------- */
+function saveAndAssignPrompt(){ saveEditorRoutine(); const arr = getRoutines(); const r = arr[arr.length-1]; if(!r) return alert('No routine to assign'); document.getElementById('assignRoutineId').value = r.id; document.getElementById('assignDate').value=''; document.getElementById('assignModal').style.display = 'flex'; }
 
-/* Initialization & URL param handling (?edit=ID triggers editor open) */
+/* ---------- URL params for edit ---------- */
 function readParams(){
-  const p = new URLSearchParams(location.search); const edit = p.get('edit');
+  const p = new URLSearchParams(location.search);
+  const edit = p.get('edit');
   if(edit){ setTimeout(()=> editRoutine(Number(edit)), 200); }
 }
-(function init(){ renderAll(); readParams(); })();
-</script>
 
+/* ---------- init ---------- */
+(function init(){ renderAll(); readParams(); window.addEventListener('storage', (e)=>{ if(e.key === 'flowtime_sync'){ renderAll(); } }); })();
+</script>
 </body>
 </html>
