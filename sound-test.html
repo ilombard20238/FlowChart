@@ -6,14 +6,14 @@
 <style>
   body {
     font-family: "Poppins", sans-serif;
-    background: #ffe6f2;
+    background: #fff0f5;
     text-align: center;
     padding: 40px;
   }
 
   h1 {
-    color: #ff6aa8;
-    font-size: 34px;
+    color: #ff66b3;
+    font-size: 32px;
     margin-bottom: 10px;
   }
 
@@ -22,21 +22,21 @@
     color: #444;
   }
 
-  button {
-    background: #ff7fbc;
+  .sound-btn {
+    background: #ff99cc;
     border: none;
-    padding: 15px 25px;
-    margin: 12px;
+    padding: 12px 25px;
+    margin: 8px;
     border-radius: 20px;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
+    width: 220px;
     transition: 0.2s;
-    width: 260px;
   }
 
-  button:hover {
-    background: #ff5da8;
+  .sound-btn:hover {
+    background: #ff66b3;
     transform: scale(1.05);
   }
 </style>
@@ -44,91 +44,119 @@
 <body>
 
 <h1>🎧 FlowTime Sound Preview</h1>
-<p>Tap a button to hear the sound!</p>
+<p>Click a button to hear the sound!</p>
 
-<button onclick="playMagicalChime()">✨ Magical Chime (A)</button><br>
-<button onclick="playCutePop()">🍬 Cute Digital Pop (B)</button><br>
-<button onclick="playCozyBell()">🔔 Cozy Bell Ring (C)</button><br>
-<button onclick="playJingle()">🎉 Celebration Jingle (D)</button>
+<div>
+  <!-- Step Completion Sounds -->
+  <h3>Step Completion Sounds</h3>
+  <button class="sound-btn" onclick="playMagicalChime()">✨ Magical Chime</button><br>
+  <button class="sound-btn" onclick="playCutePop()">🍬 Cute Digital Pop</button><br>
+  <button class="sound-btn" onclick="playCozyBell()">🔔 Cozy Bell</button><br>
+  <button class="sound-btn" onclick="playSparkleCascade()">💫 Sparkle Cascade</button><br>
+  <button class="sound-btn" onclick="playXylophone()">🎵 Tiny Xylophone</button><br>
+  <button class="sound-btn" onclick="playBubblePop()">🎈 Bubble Pop Series</button><br>
+  <button class="sound-btn" onclick="playLittleWhistle()">🐦 Little Whistle</button><br>
+  <button class="sound-btn" onclick="playCartoonBoing()">🎯 Cartoon Boing</button><br>
+</div>
+
+<div>
+  <!-- Routine Completion Sounds -->
+  <h3>Routine Completion Sounds</h3>
+  <button class="sound-btn" onclick="playCelebrationJingle()">🎉 Celebration Jingle</button><br>
+  <button class="sound-btn" onclick="playTinyMelody()">🏆 Tiny Melody Sequence</button><br>
+  <button class="sound-btn" onclick="playSoftFanFare()">🌟 Soft Fan Fare</button><br>
+  <button class="sound-btn" onclick="playHeartbeatSparkle()">💖 Heartbeat Sparkle</button><br>
+</div>
 
 <script>
-// Base audio setup
 function playTone(type, freq, duration, volume = 0.4) {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-
     osc.frequency.value = freq;
     osc.type = type;
     gain.gain.value = volume;
-
     osc.connect(gain);
     gain.connect(ctx.destination);
-
     osc.start();
     osc.stop(ctx.currentTime + duration);
 }
 
-
-// ✨ Magical Chime (soft, sparkly)
+// Step Completion
 function playMagicalChime() {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-    function chime(f, t) {
+    [800, 1200].forEach((f,i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.frequency.value = f;
         osc.type = "sine";
+        osc.frequency.value = f;
         gain.gain.value = 0.5;
-
         osc.connect(gain);
         gain.connect(ctx.destination);
-
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t);
-        osc.start();
-        osc.stop(ctx.currentTime + t);
-    }
-
-    chime(800, 0.4);
-    setTimeout(() => chime(1200, 0.25), 100);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime + i*0.1);
+        osc.stop(ctx.currentTime + 0.4 + i*0.1);
+    });
 }
-
-
-// 🍬 Cute Digital Pop (Nintendo-style)
 function playCutePop() {
-    playTone("square", 700, 0.12, 0.5);
-    setTimeout(() => playTone("square", 900, 0.08, 0.4), 90);
+    playTone("square",700,0.12,0.5);
+    setTimeout(()=>playTone("square",900,0.08,0.4),90);
 }
-
-
-// 🔔 Cozy Bell Ring (warm bell)
 function playCozyBell() {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-
-    osc.type = "sine";
+    osc.type="sine";
     osc.frequency.setValueAtTime(600, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 1.0);
-
-    gain.gain.setValueAtTime(0.6, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
-
+    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime+1.0);
+    gain.gain.setValueAtTime(0.6,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+1.0);
     osc.connect(gain);
     gain.connect(ctx.destination);
-
     osc.start();
-    osc.stop(ctx.currentTime + 1.2);
+    osc.stop(ctx.currentTime+1.2);
+}
+function playSparkleCascade() {
+    [600,700,800,900].forEach((f,i)=>{
+        setTimeout(()=>playTone("sine",f,0.15,0.4),i*120);
+    });
+}
+function playXylophone() {
+    [800,900,1000].forEach((f,i)=>{
+        setTimeout(()=>playTone("triangle",f,0.18,0.5),i*150);
+    });
+}
+function playBubblePop() {
+    [500,650,800].forEach((f,i)=>{
+        setTimeout(()=>playTone("square",f,0.12,0.5),i*100);
+    });
+}
+function playLittleWhistle() {
+    playTone("sine",1200,0.18,0.5);
+}
+function playCartoonBoing() {
+    playTone("sawtooth",400,0.2,0.5);
 }
 
-
-// 🎉 Celebration Jingle (tiny melody)
-function playJingle() {
-    let notes = [700, 900, 1100, 900];
-    let times = [0, 0.18, 0.36, 0.54];
-
-    notes.forEach((freq, i) => {
-        setTimeout(() => playTone("triangle", freq, 0.18, 0.5), times[i] * 1000);
+// Routine Completion
+function playCelebrationJingle() {
+    [700,900,1100,900].forEach((f,i)=>{
+        setTimeout(()=>playTone("triangle",f,0.18,0.5),i*180);
+    });
+}
+function playTinyMelody() {
+    [600,700,800].forEach((f,i)=>{
+        setTimeout(()=>playTone("triangle",f,0.18,0.5),i*200);
+    });
+}
+function playSoftFanFare() {
+    [400,500,600,700].forEach((f,i)=>{
+        setTimeout(()=>playTone("sine",f,0.2,0.4),i*180);
+    });
+}
+function playHeartbeatSparkle() {
+    [700,800].forEach((f,i)=>{
+        setTimeout(()=>playTone("sine",f,0.18,0.5),i*250);
     });
 }
 </script>
