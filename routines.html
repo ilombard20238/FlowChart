@@ -4,39 +4,98 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlowTime - Build a Routine</title>
+
   <style>
-    body { 
-      font-family: 'Poppins', sans-serif; 
-      background: #f0f4f8; 
-      margin:0; padding:0; 
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f4f8;
+      margin:0; padding:0;
     }
-    header { 
-      background: #fff; padding: 20px; text-align: center; 
+
+    header {
+      background:#fff;
+      padding:20px;
+      text-align:center;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
       box-shadow:0 2px 10px rgba(0,0,0,0.1);
     }
-    h1 { margin:0; color:#6c4ab6; }
-    .container { padding: 20px; max-width:600px; margin:0 auto; }
+
+    header h1 { color:#6c4ab6; margin:0; }
+    header a {
+      text-decoration:none;
+      padding:10px 15px;
+      background:#6c4ab6;
+      color:white;
+      border-radius:10px;
+    }
+
+    .container {
+      padding:20px;
+      max-width:600px;
+      margin:0 auto;
+    }
 
     input, button {
-      padding:10px; margin:5px 0; border-radius:10px; border:1px solid #ccc; width:100%;
+      padding:10px;
+      margin:5px 0;
+      width:100%;
+      border-radius:10px;
+      border:1px solid #ccc;
     }
 
     .step-box {
-      display:flex; gap:10px; margin-bottom:8px;
+      display:flex;
+      gap:10px;
+      margin-bottom:8px;
+      align-items:center;
     }
-    .step-box input { width:50%; }
+
+    .step-box input { width:45%; }
+    .delete-step-btn {
+      padding:5px 8px;
+      background:#ff6b6b;
+      color:white;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    }
 
     .routine-list { margin-top:20px; }
-    .routine-item { 
-      background:#fff; padding:10px; margin-bottom:10px; 
-      border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); 
+    .routine-item {
+      background:#fff;
+      padding:15px;
+      border-radius:10px;
+      margin-bottom:10px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
     }
+
+    .routine-actions {
+      margin-top:10px;
+      display:flex;
+      gap:10px;
+    }
+
+    .routine-actions button {
+      flex:1;
+      padding:8px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    }
+
+    .del-btn { background:#ff6b6b; color:white; }
+    .pin-btn { background:#6c4ab6; color:white; }
+
   </style>
 </head>
 <body>
 
 <header>
+  <a href="index.html">🏠 Home</a>
   <h1>🧩 Build a Routine</h1>
+  <div></div>
 </header>
 
 <div class="container">
@@ -45,52 +104,49 @@
 
   <h3>Add Steps</h3>
   <div id="stepsContainer"></div>
-  <button onclick="addStep()">➕ Add Step</button>
 
+  <button onclick="addStep()">➕ Add Step</button>
   <button onclick="saveRoutine()">💾 Save Routine</button>
 
   <h3>Saved Routines</h3>
-  <div class="routine-list" id="routineList"></div>
+  <div id="routineList"></div>
 
 </div>
 
 <script>
-  // Add step fields
+  // Add new step
   function addStep() {
-    const container = document.getElementById('stepsContainer');
+    const container = document.getElementById("stepsContainer");
 
-    const div = document.createElement('div');
-    div.className = 'step-box';
+    const div = document.createElement("div");
+    div.className = "step-box";
 
     div.innerHTML = `
       <input type="text" class="step-name" placeholder="Step Name">
       <input type="number" class="step-time" placeholder="Minutes">
+      <button class="delete-step-btn" onclick="this.parentElement.remove()">🗑</button>
     `;
 
     container.appendChild(div);
   }
 
-  // Save routine to localStorage
+  // Save routine
   function saveRoutine() {
-    const name = document.getElementById('routineName').value;
-    const stepNames = document.querySelectorAll('.step-name');
-    const stepTimes = document.querySelectorAll('.step-time');
+    const name = document.getElementById("routineName").value;
+    if (!name) return alert("Enter a routine name");
 
-    if (!name) {
-      alert("Please enter a routine name");
-      return;
-    }
+    const stepNames = document.querySelectorAll(".step-name");
+    const stepTimes = document.querySelectorAll(".step-time");
 
     let steps = [];
     let totalTime = 0;
 
     stepNames.forEach((input, i) => {
-      const stepName = input.value;
-      const stepTime = Number(stepTimes[i].value);
-
-      if (stepName && stepTime > 0) {
-        steps.push({ name: stepName, time: stepTime });
-        totalTime += stepTime;
+      const n = input.value;
+      const t = Number(stepTimes[i].value);
+      if (n && t > 0) {
+        steps.push({ name:n, time:t });
+        totalTime += t;
       }
     });
 
@@ -98,44 +154,69 @@
       id: Date.now(),
       name,
       steps,
-      totalTime
+      totalTime,
+      pinned: false
     };
 
-    // Read existing routines
     let routines = JSON.parse(localStorage.getItem("routines") || "[]");
-
-    // Add new routine
     routines.push(routine);
-
-    // Save back
     localStorage.setItem("routines", JSON.stringify(routines));
 
-    alert("Routine Saved!");
+    alert("Routine saved!");
     displayRoutines();
   }
 
-  // Display routines on the page
+  // Delete routine
+  function deleteRoutine(id) {
+    let routines = JSON.parse(localStorage.getItem("routines") || "[]");
+    routines = routines.filter(r => r.id !== id);
+    localStorage.setItem("routines", JSON.stringify(routines));
+    displayRoutines();
+  }
+
+  // Pin routine
+  function pinRoutine(id) {
+    let routines = JSON.parse(localStorage.getItem("routines") || "[]");
+
+    routines = routines.map(r => {
+      if (r.id === id) {
+        r.pinned = !r.pinned;
+      }
+      return r;
+    });
+
+    localStorage.setItem("routines", JSON.stringify(routines));
+    displayRoutines();
+  }
+
+  // Display routines
   function displayRoutines() {
     let routines = JSON.parse(localStorage.getItem("routines") || "[]");
-    const container = document.getElementById('routineList');
+    const container = document.getElementById("routineList");
 
     container.innerHTML = "";
 
     routines.forEach(r => {
-      const div = document.createElement('div');
+      const div = document.createElement("div");
       div.className = "routine-item";
 
       div.innerHTML = `
         <strong>${r.name}</strong> (${r.totalTime} min)
         <br>
         <small>${r.steps.length} steps</small>
+
+        <div class="routine-actions">
+          <button class="del-btn" onclick="deleteRoutine(${r.id})">Delete</button>
+          <button class="pin-btn" onclick="pinRoutine(${r.id})">
+            ${r.pinned ? "Unpin" : "Pin"}
+          </button>
+        </div>
       `;
 
       container.appendChild(div);
     });
   }
 
-  // Load routines on page load
   displayRoutines();
 </script>
 
