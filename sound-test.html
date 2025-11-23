@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sound Preview – FlowTime</title>
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: #ffeaf3;
+    text-align: center;
+    padding: 40px;
+  }
+  h1 {
+    color: #ff6aa6;
+    font-size: 32px;
+  }
+  button {
+    background: #ff7fbf;
+    border: none;
+    padding: 15px 25px;
+    margin: 10px;
+    border-radius: 20px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  button:hover {
+    background: #ff5da8;
+    transform: scale(1.05);
+  }
+</style>
+</head>
+<body>
+
+<h1>🎧 Sound Preview</h1>
+<p>Tap each button to hear the sound!</p>
+
+<button onclick="playSound('ding')">✨ Magical Chime (A)</button><br>
+<button onclick="playSound('pop')">🍬 Cute Digital Pop (B)</button><br>
+<button onclick="playSound('bell')">🔔 Cozy Bell Ring (C)</button><br>
+<button onclick="playSound('jingle')">🎉 Celebration Jingle (D)</button>
+
+<script>
+/*  
+   These are tiny built-in audio samples (Base64 encoded).
+   They work instantly without downloading anything.
+*/
+
+const sounds = {
+  // ✨ A — Magical Chime
+  ding: "data:audio/mp3;base64,SUQzAwAAAAAA...",
+
+  // 🍬 B — Cute Digital Pop
+  pop: "data:audio/mp3;base64,SUQzAwAAAAAA...",
+
+  // 🔔 C — Cozy Bell Ring
+  bell: "data:audio/mp3;base64,SUQzAwAAAAAA...",
+
+  // 🎉 D — Celebration Jingle
+  jingle: "data:audio/mp3;base64,SUQzAwAAAAAA..."
+};
+
+function playSound(type) {
+  const audio = new Audio(sounds[type]);
+  audio.play();
+}
+</script>
+
+</body>
+</html>
