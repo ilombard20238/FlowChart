@@ -1,310 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlowTime - Calendar</title>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FlowTime — Calendar</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background:#f0f4f8;
-      margin:0; padding:0;
-    }
+    body { font-family:'Poppins',sans-serif; background:#f0f4f8; margin:0; }
+    header { background:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+    header h1 { margin:0; color:#6c4ab6; font-size:18px; }
+    .btn { padding:8px 12px; border-radius:8px; color:#fff; background:#6c4ab6; text-decoration:none; }
 
-    header {
-      background:#fff;
-      padding:20px;
-      text-align:center;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      box-shadow:0 2px 10px rgba(0,0,0,0.1);
-    }
+    .wrap { max-width:1100px; margin:22px auto; padding:0 20px; display:grid; grid-template-columns:1fr 360px; gap:20px; }
+    .card { background:#fff; padding:16px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
 
-    header a {
-      text-decoration:none;
-      padding:10px 15px;
-      background:#6c4ab6;
-      color:white;
-      border-radius:10px;
-    }
+    .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:10px; margin-top:12px; }
+    .day { background:#f7f7f7; padding:14px; border-radius:10px; min-height:80px; position:relative; cursor:pointer; }
+    .day:hover { background:#efe8ff; }
+    .day .date-num { font-weight:600; color:#333; }
+    .day .badges { position:absolute; bottom:8px; left:8px; right:8px; display:flex; gap:6px; flex-wrap:wrap; }
+    .badge { background:#e8f0ff; border-radius:10px; padding:4px 8px; font-size:12px; color:#333; }
 
-    header h1 { margin:0; color:#6c4ab6; }
+    .controls { display:flex; gap:8px; }
+    select, button, input { padding:8px; border-radius:8px; border:1px solid #ddd; font:inherit; }
 
-    .calendar {
-      max-width:700px;
-      margin:30px auto;
-      background:#fff;
-      padding:20px;
-      border-radius:15px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.1);
-    }
+    .routine-box { background:#f0f4ff; padding:8px; border-radius:8px; margin-bottom:8px; }
 
-    .calendar-grid {
-      display:grid;
-      grid-template-columns:repeat(7, 1fr);
-      gap:10px;
-      margin-top:20px;
-    }
-
-    .day {
-      background:#f7f7f7;
-      padding:20px;
-      border-radius:10px;
-      text-align:center;
-      cursor:pointer;
-      transition:0.2s;
-    }
-
-    .day:hover { background:#e8e1f8; }
-    .selected-day { background:#d5c8ff !important; }
-
-    .side-panel {
-      max-width:700px;
-      margin:20px auto;
-      background:white;
-      padding:20px;
-      border-radius:15px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    select, button {
-      padding:10px;
-      width:100%;
-      border-radius:10px;
-      margin-top:10px;
-      border:1px solid #ccc;
-      cursor:pointer;
-    }
-
-    .routine-box {
-      background:#f0f4ff;
-      padding:10px;
-      border-radius:10px;
-      margin-bottom:8px;
-    }
-
-    /* Popup */
-    #popup {
-      position:fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background:rgba(0,0,0,0.5);
-      display:none;
-      justify-content:center;
-      align-items:center;
-    }
-
-    #popupContent {
-      background:white;
-      padding:20px;
-      width:300px;
-      border-radius:10px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.2);
-    }
-
-    #popupContent input {
-      width:100%;
-      padding:8px;
-      margin-top:8px;
-      border-radius:8px;
-      border:1px solid #ccc;
-    }
-
-    #popupContent button {
-      margin-top:10px;
-    }
-
+    /* modal */
+    .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; }
+    .modal { width:360px; background:#fff; padding:14px; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.25); }
+    .step-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+    .step-row input { padding:8px; border-radius:8px; border:1px solid #ddd; }
+    .small { width:80px; }
+    .small-btn { padding:8px; border-radius:8px; border:none; cursor:pointer; }
   </style>
 </head>
 <body>
 
 <header>
-  <a href="index.html">🏠 Home</a>
-  <h1>📅 Your Calendar</h1>
-  <div></div>
+  <a class="btn" href="index.html">🏠 Home</a>
+  <h1>📅 FlowTime Calendar</h1>
+  <div style="width:70px;"></div>
 </header>
 
-<div class="calendar">
-  <h2 id="monthTitle"></h2>
+<div class="wrap">
+  <div class="card">
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <div style="display:flex; gap:8px; align-items:center;">
+        <select id="monthSelect"></select>
+        <select id="yearSelect"></select>
+        <div style="font-size:13px; color:#555; margin-left:8px;" id="monthTitle"></div>
+      </div>
+      <div class="controls">
+        <button onclick="goToday()">Today</button>
+        <button onclick="openCreateModal()">Create Routine</button>
+      </div>
+    </div>
 
-  <!-- Month + year selector -->
-  <select id="monthSelect" onchange="updateCalendar()">
-    <script>
-      for (let m = 0; m < 12; m++) {
-        document.write(`<option value="${m}">${new Date(0, m).toLocaleString('default', { month:'long' })}</option>`);
-      }
-    </script>
-  </select>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
 
-  <select id="yearSelect" onchange="updateCalendar()">
-    <script>
-      for (let y = 2023; y <= 2035; y++) {
-        document.write(`<option value="${y}">${y}</option>`);
-      }
-    </script>
-  </select>
+  <div class="card">
+    <h3 id="selectedDateLabel">Select a day</h3>
 
-  <div class="calendar-grid" id="calendarGrid"></div>
+    <label><strong>Add a routine (existing):</strong></label>
+    <select id="routineSelect" style="margin-top:8px;">
+      <option value="">-- select routine --</option>
+    </select>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button onclick="assignSelectedRoutine()">Add to Day</button>
+      <button onclick="openCreateModal()">Create</button>
+    </div>
+
+    <h4 style="margin-top:12px;">Routines on this day</h4>
+    <div id="dayRoutines"></div>
+  </div>
 </div>
 
-<div class="side-panel">
-  <h3 id="selectedDateLabel">Select a day</h3>
+<!-- Modal for create / edit / assign from calendar -->
+<div id="modal" class="modal-backdrop">
+  <div class="modal" id="modalContent">
+    <h3 id="modalTitle">New Routine</h3>
+    <input id="modalRoutineName" placeholder="Routine name" style="width:100%; margin-bottom:8px;" />
 
-  <label><strong>Add a Routine to this day:</strong></label>
-  <select id="routineSelect">
-    <option value="">-- Select Routine --</option>
-  </select>
+    <div id="modalSteps"></div>
 
-  <button onclick="assignRoutineToDay()">Add Routine</button>
-  <button onclick="openPopup()">➕ Create New Routine</button>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button onclick="addModalStep()">+ Step</button>
+      <button onclick="clearModal()">Clear</button>
+    </div>
 
-  <h3>Routines on this day</h3>
-  <div id="dayRoutines"></div>
-</div>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <button onclick="saveModalRoutine()">Save Routine</button>
+      <button onclick="saveAndAssignFromModal()">Save & Assign to Selected Day</button>
+      <button onclick="closeModal()" style="background:#ddd;">Cancel</button>
+    </div>
 
-<!-- POPUP FOR CREATING ROUTINE -->
-<div id="popup">
-  <div id="popupContent">
-    <h3>New Routine</h3>
-    <input type="text" id="newRoutineName" placeholder="Routine name">
-    <input type="number" id="newRoutineTime" placeholder="Total minutes">
-    <button onclick="saveNewRoutine()">Save</button>
-    <button onclick="closePopup()">Cancel</button>
+    <div style="margin-top:10px; font-size:13px; color:#666;">
+      <em>You can also choose an existing routine from dropdown and edit it here.</em>
+    </div>
   </div>
 </div>
 
 <script>
-  let selectedDay = null;
+/* Models:
+   routines: [{id,name,steps:[{id,name,time}], totalTime, pinned}]
+   calendarData: { "YYYY-M-D": [routineId,...] }
+*/
 
-  function loadCalendar() {
-    const now = new Date();
-    document.getElementById("monthSelect").value = now.getMonth();
-    document.getElementById("yearSelect").value = now.getFullYear();
-    updateCalendar();
+function uid(){ return Date.now() + Math.floor(Math.random()*1000); }
+function escapeHtml(s){ return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* Month/Year selectors init */
+const monthSelect = document.getElementById('monthSelect');
+const yearSelect = document.getElementById('yearSelect');
+(function initSelectors(){
+  for(let m=0;m<12;m++){
+    monthSelect.appendChild(new Option(new Date(0,m).toLocaleString('default',{month:'long'}), m));
+  }
+  const now = new Date();
+  for(let y=2023;y<=2035;y++) yearSelect.appendChild(new Option(y,y));
+  monthSelect.value = now.getMonth();
+  yearSelect.value = now.getFullYear();
+})();
+
+monthSelect.onchange = renderCalendar;
+yearSelect.onchange = renderCalendar;
+
+/* Render calendar */
+function renderCalendar(){
+  const month = Number(monthSelect.value);
+  const year = Number(yearSelect.value);
+  document.getElementById('monthTitle').innerText = `${new Date(year,month).toLocaleString('default',{month:'long'})} ${year}`;
+
+  const grid = document.getElementById('calendarGrid');
+  grid.innerHTML = '';
+
+  const firstDay = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+
+  // blanks before first day
+  for(let i=0;i<firstDay.getDay();i++){
+    const blank = document.createElement('div');
+    grid.appendChild(blank);
   }
 
-  function updateCalendar() {
-    const month = Number(document.getElementById("monthSelect").value);
-    const year = Number(document.getElementById("yearSelect").value);
+  // calendar data for badges
+  const cd = JSON.parse(localStorage.getItem('calendarData') || '{}');
 
-    const grid = document.getElementById("calendarGrid");
-    const title = document.getElementById("monthTitle");
-
-    title.innerText = `${new Date(year, month).toLocaleString('default', { month:'long' })} ${year}`;
-    grid.innerHTML = "";
-
-    const firstDay = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-
-    for (let i = 0; i < firstDay.getDay(); i++) {
-      grid.appendChild(document.createElement("div"));
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const d = document.createElement("div");
-      d.className = "day";
-      d.innerText = day;
-      d.onclick = () => selectDay(year, month, day);
-      grid.appendChild(d);
-    }
-  }
-
-  function selectDay(year, month, day) {
-    selectedDay = `${year}-${month+1}-${day}`;
-    document.getElementById("selectedDateLabel").innerText = "Selected: " + selectedDay;
-
-    document.querySelectorAll(".day").forEach(d => d.classList.remove("selected-day"));
-    const allDays = document.querySelectorAll(".day");
-    allDays[day - 1].classList.add("selected-day");
-
-    displayRoutinesForDay();
-  }
-
-  function loadRoutinesDropdown() {
-    const routines = JSON.parse(localStorage.getItem("routines") || "[]");
-    const dropdown = document.getElementById("routineSelect");
-
-    dropdown.innerHTML = `<option value="">-- Select Routine --</option>`;
-
-    routines.forEach(r => {
-      const opt = document.createElement("option");
-      opt.value = r.id;
-      opt.textContent = `${r.name} (${r.totalTime} min)`;
-      dropdown.appendChild(opt);
-    });
-  }
-
-  function assignRoutineToDay() {
-    if (!selectedDay) return alert("Choose a day");
-    const routineId = document.getElementById("routineSelect").value;
-    if (!routineId) return alert("Choose a routine");
-
-    let calendarData = JSON.parse(localStorage.getItem("calendarData") || "{}");
-    if (!calendarData[selectedDay]) calendarData[selectedDay] = [];
-
-    calendarData[selectedDay].push(Number(routineId));
-    localStorage.setItem("calendarData", JSON.stringify(calendarData));
-
-    displayRoutinesForDay();
-  }
-
-  function displayRoutinesForDay() {
-    const box = document.getElementById("dayRoutines");
-    box.innerHTML = "";
-    if (!selectedDay) return;
-
-    const routines = JSON.parse(localStorage.getItem("routines") || "[]");
-    const calendarData = JSON.parse(localStorage.getItem("calendarData") || "{}");
-
-    const ids = calendarData[selectedDay] || [];
-
-    ids.forEach(id => {
+  for(let d=1; d<=daysInMonth; d++){
+    const key = `${year}-${month+1}-${d}`; // same key used by other pages
+    const div = document.createElement('div');
+    div.className='day';
+    div.dataset.key = key;
+    div.onclick = ()=> selectDay(key);
+    div.innerHTML = `<div class="date-num">${d}</div>
+                     <div class="badges"></div>`;
+    // show assigned routines badges (names)
+    const ids = cd[key] || [];
+    const routines = JSON.parse(localStorage.getItem('routines') || '[]');
+    const badgeContainer = div.querySelector('.badges');
+    ids.slice(0,3).forEach(id => {
       const r = routines.find(x => x.id === id);
-      if (r) {
-        const div = document.createElement("div");
-        div.className = "routine-box";
-        div.innerHTML = `<strong>${r.name}</strong> - ${r.totalTime} min`;
-        box.appendChild(div);
+      if(r){
+        const b = document.createElement('div');
+        b.className='badge';
+        b.textContent = r.name;
+        badgeContainer.appendChild(b);
       }
     });
+    if(ids.length>3){
+      const more = document.createElement('div'); more.className='badge'; more.textContent = `+${ids.length-3} more`;
+      badgeContainer.appendChild(more);
+    }
+    grid.appendChild(div);
   }
+  // clear selected day UI when month changes
+  clearSelected();
+  populateRoutineDropdown();
+}
 
-  // Popup controls
-  function openPopup() {
-    document.getElementById("popup").style.display = "flex";
-  }
-  function closePopup() {
-    document.getElementById("popup").style.display = "none";
-  }
+/* selection */
+let selectedKey = null;
+function selectDay(key){
+  selectedKey = key;
+  document.getElementById('selectedDateLabel').innerText = 'Selected: ' + key;
+  // highlight selected
+  document.querySelectorAll('.day').forEach(el => el.style.outline = '');
+  const el = document.querySelector(`.day[data-key="${key}"]`);
+  if(el) el.style.outline = '3px solid rgba(108,74,182,0.2)';
+  displayRoutinesForDay();
+}
 
-  function saveNewRoutine() {
-    const name = document.getElementById("newRoutineName").value;
-    const time = Number(document.getElementById("newRoutineTime").value);
+/* clear selection */
+function clearSelected(){
+  selectedKey = null;
+  document.getElementById('selectedDateLabel').innerText = 'Select a day';
+  document.getElementById('dayRoutines').innerHTML = '';
+}
 
-    if (!name || !time) return alert("Fill all fields");
+/* load routines into dropdown */
+function populateRoutineDropdown(){
+  const dropdown = document.getElementById('routineSelect');
+  dropdown.innerHTML = '<option value="">-- select routine --</option>';
+  const routines = JSON.parse(localStorage.getItem('routines') || '[]');
+  routines.forEach(r => {
+    const opt = document.createElement('option'); opt.value = r.id; opt.textContent = `${r.name} (${r.totalTime} min)`;
+    dropdown.appendChild(opt);
+  });
+}
 
-    const routine = {
-      id: Date.now(),
-      name,
-      steps: [],
-      totalTime: time,
-      pinned: false
+/* assign selected routine (from side panel) */
+function assignSelectedRoutine(){
+  if(!selectedKey) return alert('Choose a day first');
+  const rid = Number(document.getElementById('routineSelect').value);
+  if(!rid) return alert('Choose a routine');
+  let cd = JSON.parse(localStorage.getItem('calendarData') || '{}');
+  if(!cd[selectedKey]) cd[selectedKey]=[];
+  cd[selectedKey].push(rid);
+  cd[selectedKey] = Array.from(new Set(cd[selectedKey]));
+  localStorage.setItem('calendarData', JSON.stringify(cd));
+  renderCalendar();
+  displayRoutinesForDay();
+}
+
+/* show routines for selected day */
+function displayRoutinesForDay(){
+  const container = document.getElementById('dayRoutines');
+  container.innerHTML = '';
+  if(!selectedKey) return;
+  const cd = JSON.parse(localStorage.getItem('calendarData') || '{}');
+  const ids = cd[selectedKey] || [];
+  const routines = JSON.parse(localStorage.getItem('routines') || '[]');
+
+  if(ids.length===0) { container.innerHTML = '<div style="color:#777;">No routines assigned</div>'; return; }
+
+  ids.forEach(id => {
+    const r = routines.find(x=>x.id===id);
+    if(!r) return;
+    const box = document.createElement('div'); box.className='routine-box';
+    box.innerHTML = `<strong>${escapeHtml(r.name)}</strong><div style="font-size:13px;color:#555">${r.totalTime} min • ${r.steps.length} steps</div>`;
+    // actions: edit, remove
+    const btns = document.createElement('div'); btns.style.marginTop='8px'; btns.style.display='flex'; btns.style.gap='8px';
+    const btnEdit = document.createElement('button'); btnEdit.textContent='Edit'; btnEdit.onclick = ()=> openModalForEdit(r.id);
+    const btnRemove = document.createElement('button'); btnRemove.textContent='Remove'; btnRemove.onclick = ()=>{
+      if(!confirm('Remove this routine from the day?')) return;
+      const cd2 = JSON.parse(localStorage.getItem('calendarData')||'{}');
+      cd2[selectedKey] = (cd2[selectedKey]||[]).filter(x=>x!==id);
+      localStorage.setItem('calendarData', JSON.stringify(cd2));
+      displayRoutinesForDay(); renderCalendar();
     };
+    const btnOpen = document.createElement('button'); btnOpen.textContent='Open'; btnOpen.onclick = ()=> openModalForEdit(r.id);
+    btns.appendChild(btnEdit); btns.appendChild(btnRemove);
+    box.appendChild(btns);
+    container.appendChild(box);
+  });
+}
 
-    let routines = JSON.parse(localStorage.getItem("routines") || "[]");
-    routines.push(routine);
-    localStorage.setItem("routines", JSON.stringify(routines));
+/* Today helper */
+function goToday(){
+  const now = new Date();
+  monthSelect.value = now.getMonth(); yearSelect.value = now.getFullYear();
+  renderCalendar();
+  const key = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+  selectDay(key);
+}
 
-    closePopup();
-    loadRoutinesDropdown();
-    alert("Routine created!");
+/* ---------- Modal (create / edit / save & assign) ---------- */
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modalTitle');
+const modalName = document.getElementById('modalRoutineName');
+const modalSteps = document.getElementById('modalSteps');
+let modalEditingId = null;
 
+function openCreateModal(){
+  modalEditingId = null;
+  modalTitle.innerText = 'Create Routine';
+  modalName.value = '';
+  modalSteps.innerHTML = '';
+  addModalStep(); // start with one
+  showModal();
+}
+
+function openModalForEdit(routineId){
+  const routines = JSON.parse(localStorage.getItem('routines') || '[]');
+  const r = routines.find(x=>x.id===routineId);
+  if(!r) return alert('Routine not found');
+  modalEditingId = r.id;
+  modalTitle.innerText = 'Edit Routine';
+  modalName.value = r.name;
+  modalSteps.innerHTML = '';
+  r.steps.forEach(s => {
+    addModalStep(s);
+  });
+  showModal();
+}
+
+function showModal(){ modal.style.display='flex'; }
+function closeModal(){ modal.style.display='none'; clearModal(); }
+
+function addModalStep(step = {id: uid(), name:'', time:''}){
+  const row = document.createElement('div'); row.className='step-row'; row.dataset.stepId = step.id;
+  row.innerHTML = `
+    <input class="step-name" placeholder="Step name" value="${escapeHtml(step.name)}" />
+    <input class="step-time small" type="number" placeholder="min" value="${step.time||''}" />
+    <button class="small-btn" onclick="this.parentElement.remove()">🗑</button>
+  `;
+  modalSteps.appendChild(row);
+}
+function clearModal(){ modalEditingId = null; modalName.value=''; modalSteps.innerHTML=''; }
+
+function saveModalRoutine(){
+  const name = modalName.value.trim();
+  if(!name) return alert('Enter name');
+  const rows = Array.from(modalSteps.querySelectorAll('.step-row'));
+  const steps = rows.map(r => ({ id: r.dataset.stepId||uid(), name: r.querySelector('.step-name').value.trim(), time: Number(r.querySelector('.step-time').value) || 0 })).filter(s=>s.name);
+  const total = steps.reduce((a,b)=>a+(b.time||0),0);
+
+  let routines = JSON.parse(localStorage.getItem('routines')||'[]');
+  if(modalEditingId){
+    routines = routines.map(x => x.id===modalEditingId ? {...x, name, steps, totalTime: total} : x);
+    alert('Routine updated');
+  } else {
+    routines.push({ id: uid(), name, steps, totalTime: total, pinned:false });
+    alert('Routine created');
   }
+  localStorage.setItem('routines', JSON.stringify(routines));
+  populateRoutineDropdown();
+  renderCalendar();
+  closeModal();
+}
 
-  loadCalendar();
-  loadRoutinesDropdown();
+function saveAndAssignFromModal(){
+  saveModalRoutine();
+  // assign last created routine OR modalEditingId if edited
+  const routines = JSON.parse(localStorage.getItem('routines')||'[]');
+  const r = modalEditingId ? routines.find(x=>x.id===modalEditingId) : routines[routines.length-1];
+  if(!r) { closeModal(); return alert('Could not locate routine'); }
+  if(!selectedKey) return alert('Choose a calendar day first');
+  let cd = JSON.parse(localStorage.getItem('calendarData')||'{}');
+  if(!cd[selectedKey]) cd[selectedKey]=[];
+  cd[selectedKey].push(r.id);
+  cd[selectedKey] = Array.from(new Set(cd[selectedKey]));
+  localStorage.setItem('calendarData', JSON.stringify(cd));
+  renderCalendar(); displayRoutinesForDay();
+  closeModal();
+}
+
+/* When user picks an existing routine, allow editing in modal */
+document.getElementById('routineSelect').addEventListener('change', function(){
+  const id = Number(this.value);
+  if(!id) return;
+  openModalForEdit(id);
+});
+
+/* initial load */
+(function(){
+  populateRoutineDropdown();
+  renderCalendar();
+})();
 </script>
 
 </body>
