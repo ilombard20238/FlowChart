@@ -8,99 +8,144 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #f0f4f8;
-      margin: 0;
-      padding: 0;
+      background:#f0f4f8;
+      margin:0; padding:0;
     }
 
     header {
-      background: #fff;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background:#fff;
+      padding:20px;
+      text-align:center;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
     }
 
-    h1 {
-      margin: 0;
-      color: #6c4ab6;
+    header a {
+      text-decoration:none;
+      padding:10px 15px;
+      background:#6c4ab6;
+      color:white;
+      border-radius:10px;
     }
+
+    header h1 { margin:0; color:#6c4ab6; }
 
     .calendar {
-      max-width: 700px;
-      margin: 30px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width:700px;
+      margin:30px auto;
+      background:#fff;
+      padding:20px;
+      border-radius:15px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
     }
 
     .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
-      margin-top: 20px;
+      display:grid;
+      grid-template-columns:repeat(7, 1fr);
+      gap:10px;
+      margin-top:20px;
     }
 
     .day {
-      background: #f7f7f7;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.2s;
+      background:#f7f7f7;
+      padding:20px;
+      border-radius:10px;
+      text-align:center;
+      cursor:pointer;
+      transition:0.2s;
     }
 
-    .day:hover {
-      background: #e8e1f8;
-    }
-
-    .selected-day {
-      background: #d5c8ff !important;
-    }
+    .day:hover { background:#e8e1f8; }
+    .selected-day { background:#d5c8ff !important; }
 
     .side-panel {
-      max-width: 700px;
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width:700px;
+      margin:20px auto;
+      background:white;
+      padding:20px;
+      border-radius:15px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    select, button {
+      padding:10px;
+      width:100%;
+      border-radius:10px;
+      margin-top:10px;
+      border:1px solid #ccc;
+      cursor:pointer;
     }
 
     .routine-box {
-      background: #f0f4ff;
-      padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 10px;
+      background:#f0f4ff;
+      padding:10px;
+      border-radius:10px;
+      margin-bottom:8px;
     }
 
-    button {
-      padding: 10px;
-      border: none;
-      background: #6c4ab6;
-      color: white;
-      width: 100%;
-      border-radius: 10px;
-      margin-top: 10px;
-      cursor: pointer;
+    /* Popup */
+    #popup {
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.5);
+      display:none;
+      justify-content:center;
+      align-items:center;
     }
 
-    select {
-      padding: 10px;
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid #ccc;
+    #popupContent {
+      background:white;
+      padding:20px;
+      width:300px;
+      border-radius:10px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.2);
     }
+
+    #popupContent input {
+      width:100%;
+      padding:8px;
+      margin-top:8px;
+      border-radius:8px;
+      border:1px solid #ccc;
+    }
+
+    #popupContent button {
+      margin-top:10px;
+    }
+
   </style>
 </head>
 <body>
 
 <header>
+  <a href="index.html">🏠 Home</a>
   <h1>📅 Your Calendar</h1>
+  <div></div>
 </header>
 
 <div class="calendar">
   <h2 id="monthTitle"></h2>
+
+  <!-- Month + year selector -->
+  <select id="monthSelect" onchange="updateCalendar()">
+    <script>
+      for (let m = 0; m < 12; m++) {
+        document.write(`<option value="${m}">${new Date(0, m).toLocaleString('default', { month:'long' })}</option>`);
+      }
+    </script>
+  </select>
+
+  <select id="yearSelect" onchange="updateCalendar()">
+    <script>
+      for (let y = 2023; y <= 2035; y++) {
+        document.write(`<option value="${y}">${y}</option>`);
+      }
+    </script>
+  </select>
+
   <div class="calendar-grid" id="calendarGrid"></div>
 </div>
 
@@ -113,9 +158,21 @@
   </select>
 
   <button onclick="assignRoutineToDay()">Add Routine</button>
+  <button onclick="openPopup()">➕ Create New Routine</button>
 
   <h3>Routines on this day</h3>
   <div id="dayRoutines"></div>
+</div>
+
+<!-- POPUP FOR CREATING ROUTINE -->
+<div id="popup">
+  <div id="popupContent">
+    <h3>New Routine</h3>
+    <input type="text" id="newRoutineName" placeholder="Routine name">
+    <input type="number" id="newRoutineTime" placeholder="Total minutes">
+    <button onclick="saveNewRoutine()">Save</button>
+    <button onclick="closePopup()">Cancel</button>
+  </div>
 </div>
 
 <script>
@@ -123,52 +180,53 @@
 
   function loadCalendar() {
     const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
+    document.getElementById("monthSelect").value = now.getMonth();
+    document.getElementById("yearSelect").value = now.getFullYear();
+    updateCalendar();
+  }
 
-    const monthTitle = document.getElementById('monthTitle');
-    const grid = document.getElementById('calendarGrid');
+  function updateCalendar() {
+    const month = Number(document.getElementById("monthSelect").value);
+    const year = Number(document.getElementById("yearSelect").value);
 
-    monthTitle.innerText = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+    const grid = document.getElementById("calendarGrid");
+    const title = document.getElementById("monthTitle");
+
+    title.innerText = `${new Date(year, month).toLocaleString('default', { month:'long' })} ${year}`;
     grid.innerHTML = "";
 
     const firstDay = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
 
-    // Fill blanks for first week
     for (let i = 0; i < firstDay.getDay(); i++) {
-      const blank = document.createElement('div');
-      grid.appendChild(blank);
+      grid.appendChild(document.createElement("div"));
     }
 
-    // Add each day
     for (let day = 1; day <= daysInMonth; day++) {
-      const div = document.createElement('div');
-      div.className = "day";
-      div.innerText = day;
-      div.onclick = () => selectDay(year, month, day);
-
-      grid.appendChild(div);
+      const d = document.createElement("div");
+      d.className = "day";
+      d.innerText = day;
+      d.onclick = () => selectDay(year, month, day);
+      grid.appendChild(d);
     }
   }
 
   function selectDay(year, month, day) {
-    selectedDay = `${year}-${month + 1}-${day}`;
+    selectedDay = `${year}-${month+1}-${day}`;
     document.getElementById("selectedDateLabel").innerText = "Selected: " + selectedDay;
 
-    // clear highlight
-    document.querySelectorAll('.day').forEach(d => d.classList.remove('selected-day'));
-
-    // highlight selected
-    const dayDivs = document.querySelectorAll('.day');
-    dayDivs[day - 1].classList.add('selected-day');
+    document.querySelectorAll(".day").forEach(d => d.classList.remove("selected-day"));
+    const allDays = document.querySelectorAll(".day");
+    allDays[day - 1].classList.add("selected-day");
 
     displayRoutinesForDay();
   }
 
-  function loadRoutinesIntoDropdown() {
+  function loadRoutinesDropdown() {
     const routines = JSON.parse(localStorage.getItem("routines") || "[]");
     const dropdown = document.getElementById("routineSelect");
+
+    dropdown.innerHTML = `<option value="">-- Select Routine --</option>`;
 
     routines.forEach(r => {
       const opt = document.createElement("option");
@@ -179,16 +237,12 @@
   }
 
   function assignRoutineToDay() {
-    if (!selectedDay) return alert("Choose a day first!");
-    
+    if (!selectedDay) return alert("Choose a day");
     const routineId = document.getElementById("routineSelect").value;
-    if (!routineId) return alert("Select a routine!");
+    if (!routineId) return alert("Choose a routine");
 
     let calendarData = JSON.parse(localStorage.getItem("calendarData") || "{}");
-
-    if (!calendarData[selectedDay]) {
-      calendarData[selectedDay] = [];
-    }
+    if (!calendarData[selectedDay]) calendarData[selectedDay] = [];
 
     calendarData[selectedDay].push(Number(routineId));
     localStorage.setItem("calendarData", JSON.stringify(calendarData));
@@ -197,29 +251,60 @@
   }
 
   function displayRoutinesForDay() {
-    const dayBox = document.getElementById("dayRoutines");
-    dayBox.innerHTML = "";
-
+    const box = document.getElementById("dayRoutines");
+    box.innerHTML = "";
     if (!selectedDay) return;
 
-    let routines = JSON.parse(localStorage.getItem("routines") || "[]");
-    let calendarData = JSON.parse(localStorage.getItem("calendarData") || "{}");
+    const routines = JSON.parse(localStorage.getItem("routines") || "[]");
+    const calendarData = JSON.parse(localStorage.getItem("calendarData") || "{}");
 
-    const routineIds = calendarData[selectedDay] || [];
+    const ids = calendarData[selectedDay] || [];
 
-    routineIds.forEach(id => {
+    ids.forEach(id => {
       const r = routines.find(x => x.id === id);
       if (r) {
         const div = document.createElement("div");
         div.className = "routine-box";
-        div.innerHTML = `<strong>${r.name}</strong> - ${r.totalTime} min<br>(${r.steps.length} steps)`;
-        dayBox.appendChild(div);
+        div.innerHTML = `<strong>${r.name}</strong> - ${r.totalTime} min`;
+        box.appendChild(div);
       }
     });
   }
 
+  // Popup controls
+  function openPopup() {
+    document.getElementById("popup").style.display = "flex";
+  }
+  function closePopup() {
+    document.getElementById("popup").style.display = "none";
+  }
+
+  function saveNewRoutine() {
+    const name = document.getElementById("newRoutineName").value;
+    const time = Number(document.getElementById("newRoutineTime").value);
+
+    if (!name || !time) return alert("Fill all fields");
+
+    const routine = {
+      id: Date.now(),
+      name,
+      steps: [],
+      totalTime: time,
+      pinned: false
+    };
+
+    let routines = JSON.parse(localStorage.getItem("routines") || "[]");
+    routines.push(routine);
+    localStorage.setItem("routines", JSON.stringify(routines));
+
+    closePopup();
+    loadRoutinesDropdown();
+    alert("Routine created!");
+
+  }
+
   loadCalendar();
-  loadRoutinesIntoDropdown();
+  loadRoutinesDropdown();
 </script>
 
 </body>
