@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlowTime - Home</title>
+
   <style>
     body {
       margin: 0;
@@ -11,9 +12,10 @@
       background: #eef2f7;
       display: flex;
       height: 100vh;
+      overflow: hidden;
     }
 
-    /* Sidebar */
+    /* SIDEBAR */
     .sidebar {
       width: 250px;
       background: #1a1f36;
@@ -40,13 +42,11 @@
       background: #39405a;
     }
 
-    /* Main content */
+    /* MAIN CONTENT */
     .main {
       flex: 1;
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-      background: #f7f9fc;
+      overflow-y: auto;
     }
     .header {
       font-size: 26px;
@@ -54,15 +54,16 @@
       margin-bottom: 20px;
     }
 
-    /* Right Sidebar */
+    /* RIGHT SIDEBAR */
     .rightbar {
-      width: 300px;
+      width: 330px;
       background: #ffffff;
       border-left: 2px solid #e3e6ee;
       padding: 20px;
       box-shadow: -2px 0 10px rgba(0,0,0,0.05);
       overflow-y: auto;
     }
+
     .widget {
       background: #fdfdfe;
       border-radius: 12px;
@@ -76,10 +77,10 @@
       font-weight: 600;
     }
 
-    /* Task Reminder Styles */
+    /* TASK STYLES */
     #taskInput {
-      width: 90%;
-      padding: 8px;
+      width: 92%;
+      padding: 10px;
       border-radius: 8px;
       border: 1px solid #ccc;
       margin-bottom: 10px;
@@ -99,8 +100,9 @@
     #addTaskBtn:hover {
       background: #3957d4;
     }
+
     .taskItem {
-      padding: 8px;
+      padding: 10px;
       background: #f1f4ff;
       border-radius: 8px;
       margin-bottom: 8px;
@@ -109,11 +111,16 @@
       align-items: center;
       font-size: 14px;
     }
+
+    .taskName {
+      cursor: pointer;
+    }
+
     .deleteBtn {
       background: #ff5c5c;
       border: none;
       color: white;
-      padding: 4px 8px;
+      padding: 5px 8px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 12px;
@@ -121,8 +128,8 @@
     .deleteBtn:hover {
       background: #e04d4d;
     }
-
   </style>
+
 </head>
 <body>
 
@@ -137,13 +144,12 @@
   <!-- MAIN CONTENT -->
   <div class="main">
     <div class="header">Welcome Back 👋</div>
-    <p>This is your productivity hub. Use the widgets on the right to track tasks and upcoming events.</p>
+    <p>This is your productivity hub. Your tasks appear on the right.</p>
   </div>
 
-  <!-- RIGHT SIDEBAR -->
+  <!-- RIGHT SIDEBAR WITH TASK REMINDER -->
   <div class="rightbar">
 
-    <!-- 🆕 TASK REMINDERS WIDGET -->
     <div class="widget">
       <h3>Task Reminders</h3>
 
@@ -155,45 +161,59 @@
 
   </div>
 
-  <!-- SCRIPT -->
-  <script>
-    const taskInput = document.getElementById('taskInput');
-    const addTaskBtn = document.getElementById('addTaskBtn');
-    const taskList = document.getElementById('taskList');
+  <!-- CONFETTI SCRIPT -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    function renderTasks() {
-      const tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
-      taskList.innerHTML = "";
-      tasks.forEach((task, i) => {
+  <!-- TASK LOGIC -->
+  <script>
+    const input = document.getElementById("taskInput");
+    const btn = document.getElementById("addTaskBtn");
+    const list = document.getElementById("taskList");
+
+    function loadTasks() {
+      const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+      list.innerHTML = "";
+      tasks.forEach((t, i) => {
         const div = document.createElement("div");
         div.className = "taskItem";
         div.innerHTML = `
-          <span>${task}</span>
+          <span class="taskName" onclick="finishTask(${i})">${t}</span>
           <button class="deleteBtn" onclick="deleteTask(${i})">X</button>
         `;
-        taskList.appendChild(div);
+        list.appendChild(div);
       });
     }
 
     function addTask() {
-      const value = taskInput.value.trim();
+      const value = input.value.trim();
       if (!value) return;
-      const tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
+
+      const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
       tasks.push(value);
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-      taskInput.value = "";
-      renderTasks();
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+
+      input.value = "";
+      loadTasks();
     }
 
-    function deleteTask(index) {
-      const tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
-      tasks.splice(index, 1);
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-      renderTasks();
+    function deleteTask(i) {
+      const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+      tasks.splice(i, 1);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      loadTasks();
     }
 
-    addTaskBtn.addEventListener("click", addTask);
-    renderTasks();
+    function finishTask(i) {
+      // Confetti 🎉
+      confetti({
+        spread: 100,
+      });
+
+      deleteTask(i);
+    }
+
+    btn.onclick = addTask;
+    loadTasks();
   </script>
 
 </body>
